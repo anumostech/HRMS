@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: attendanceapp_app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: attendanceapp
+      DB_USERNAME: attendanceuser
+      DB_PASSWORD: password
+    depends_on:
+      - db
+    networks:
+      - attendanceapp_network
+
+  db:
+    image: mysql:8.0
+    container_name: attendanceapp_db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: attendanceapp
+      MYSQL_USER: attendanceuser
+      MYSQL_PASSWORD: password
+    volumes:
+      - attendanceapp_dbdata:/var/lib/mysql
+    networks:
+      - attendanceapp_network
+
+  web:
+    image: nginx:alpine
+    container_name: attendanceapp_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - attendanceapp_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: attendanceapp_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - attendanceapp_network
+
+volumes:
+  attendanceapp_dbdata:
+
+networks:
+  attendanceapp_network:
+    driver: bridge
