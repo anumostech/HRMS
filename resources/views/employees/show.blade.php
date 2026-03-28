@@ -66,51 +66,52 @@
             <div class="card-body">
                 <div class="row">
                     @php
-                        $docs = [
-                            'Passport 1st Page' => 'passport_1st_page',
-                            'Passport 2nd Page' => 'passport_2nd_page',
-                            'Passport Outer' => 'passport_outer_page',
-                            'Passport ID' => 'passport_id_page',
-                            'Visa Page' => 'visa_page',
-                            'Labor Card' => 'labor_card',
-                            'EID 1st Page' => 'eid_1st_page',
-                            'EID 2nd Page' => 'eid_2nd_page',
-                            'Educational 1' => 'educational_1st_page',
-                            'Educational 2' => 'educational_2nd_page',
-                            'Home ID' => 'home_country_id_proof',
-                        ];
+                    $docs = [
+                    'Passport 1st Page' => 'passport_1st_page',
+                    'Passport 2nd Page' => 'passport_2nd_page',
+                    'Passport Outer' => 'passport_outer_page',
+                    'Passport ID' => 'passport_id_page',
+                    'Visa Page' => 'visa_page',
+                    'Labor Card' => 'labor_card',
+                    'EID 1st Page' => 'eid_1st_page',
+                    'EID 2nd Page' => 'eid_2nd_page',
+                    'Educational 1' => 'educational_1st_page',
+                    'Educational 2' => 'educational_2nd_page',
+                    'Home ID' => 'home_country_id_proof',
+                    ];
                     @endphp
 
                     @foreach($docs as $label => $field)
-                        <div class="col-md-4 mb-4">
-                            <div class="card border p-3 text-center h-100">
-                                <div class="mb-2">
-                                    @if($employee->$field)
-                                        <i class="fe fe-file-text fs-40 text-primary"></i>
-                                    @else
-                                        <i class="fe fe-file-minus fs-40 text-muted"></i>
-                                    @endif
-                                </div>
-                                <h6 class="fw-bold">{{ $label }}</h6>
+                    <div class="col-md-4 mb-4">
+                        <div class="card border p-3 text-center h-100">
+                            <div class="mb-2">
                                 @if($employee->$field)
-                                    <div class="mt-auto">
-                                        <button type="button" class="btn btn-sm btn-info btn-block mb-1" onclick="previewDocument('{{ asset('storage/' . $employee->$field) }}', '{{ $label }}')">
-                                            <i class="fe fe-eye"></i> Preview
-                                        </button>
-                                        <a href="{{ asset('storage/' . $employee->$field) }}" download class="btn btn-sm btn-outline-primary btn-block">
-                                            <i class="fe fe-download"></i> Download
-                                        </a>
-                                    </div>
+                                <i class="fe fe-file-text fs-40 text-primary"></i>
                                 @else
-                                    <span class="text-muted mt-auto small">Not Uploaded</span>
+                                <i class="fe fe-file-minus fs-40 text-muted"></i>
                                 @endif
                             </div>
+                            <h6 class="fw-bold">{{ $label }}</h6>
+                            @if($employee->$field)
+                            <div class="mt-auto">
+                                <a class="btn btn-sm btn-info btn-block mb-1"
+                                    onclick="previewDocument('{{ asset('storage/' . $employee->$field) }}', '{{ $label }}')">
+                                    <i class="fe fe-eye"></i> Preview
+                                </a>
+                                <a href="{{ asset('storage/' . $employee->$field) }}" download class="btn btn-sm btn-outline-primary btn-block">
+                                    <i class="fe fe-download"></i> Download
+                                </a>
+                            </div>
+                            @else
+                            <span class="text-muted mt-auto small">Not Uploaded</span>
+                            @endif
                         </div>
+                    </div>
                     @endforeach
                 </div>
             </div>
         </div>
-        
+
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Miscellaneous Details</h3>
@@ -134,15 +135,15 @@
 </div>
 
 <!-- Preview Modal -->
-<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content" style="background:transparent!important;">
+            <div class="modal-header" style="background:#000!important;color:#fff!important;">
                 <h5 class="modal-title" id="previewModalLabel">Document Preview</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
             <div class="modal-body p-0">
-                <div id="previewContent" class="text-center" style="min-height: 500px;">
+                <div id="previewContent" class="text-center" style="min-height: 1200px;">
                     <!-- Content will be injected here -->
                 </div>
             </div>
@@ -151,7 +152,6 @@
 </div>
 
 @endsection
-
 @section('scripts')
 <script>
     function previewDocument(url, title) {
@@ -165,7 +165,7 @@
         const extension = url.split('.').pop().toLowerCase();
         
         if (extension === 'pdf') {
-            content.innerHTML = `<iframe src="${url}" style="width:100%; height:80vh; border:none;"></iframe>`;
+            content.innerHTML = `<iframe src="${url}" style="width:100%; height:100vh; border:none;"></iframe>`;
         } else if (['jpg', 'jpeg', 'png'].includes(extension)) {
             content.innerHTML = `<img src="${url}" class="img-fluid p-3" style="max-height: 80vh;">`;
         } else {

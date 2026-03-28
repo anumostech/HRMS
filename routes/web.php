@@ -7,12 +7,21 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\AgreementController;
+use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\Employee\LeaveController as EmployeeLeaveController;
+use Dom\Document;
 use Illuminate\Support\Facades\Artisan;
 
 // Auth Routes
-Route::get('/', [LoginController::class, 'showLoginForm']);
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');;
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');;
+Route::post('/login', [LoginController::class, 'login'])->name('authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Forgot Password Routes
@@ -23,23 +32,87 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name
 
 // Protected Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
-    Route::get('/attendance/upload', [AttendanceController::class, 'create'])->name('attendance.upload');
-    Route::post('/attendance/upload', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::prefix('/attendance')->group(function () {
+        Route::get('/', [AttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('/upload', [AttendanceController::class, 'create'])->name('attendance.upload');
+        Route::post('/upload', [AttendanceController::class, 'store'])->name('attendance.store');
+        Route::get('/punch-in-today', [AttendanceController::class, 'indexPunchInToday'])->name('attendance.punchInToday');
+        Route::get('/punch-in-yesterday', [AttendanceController::class, 'indexPunchInYesterday'])->name('attendance.punchInYesterday');
+        Route::get('/punch-out-today', [AttendanceController::class, 'indexPunchOutToday'])->name('attendance.punchOutToday');
+        Route::get('/punch-out-yesterday', [AttendanceController::class, 'indexPunchOutYesterday'])->name('attendance.punchOutYesterday');
+        Route::get('/late', [AttendanceController::class, 'lateAttendance'])->name('attendance.late');
+        Route::get('/absent', [AttendanceController::class, 'absentAttendance'])->name('attendance.absent');
+    });
+
 
     // Dashboard Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
     Route::get('/api/dashboard/charts', [DashboardController::class, 'getChartData'])->name('dashboard.charts');
     Route::get('/api/dashboard/notifications', [DashboardController::class, 'getNotifications'])->name('dashboard.notifications');
+    Route::post('/api/notifications/read/{id}', [DashboardController::class, 'markAsRead'])->name('dashboard.notifications.read');
 
-    // Employees Resource Routes
     Route::resource('employees', EmployeeController::class);
 
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
+    Route::post('/documents/upload', [DocumentController::class, 'upload'])->name('documents.upload');
+    Route::post('/documents/store', [DocumentController::class, 'store'])->name('documents.store');
+    Route::post('/documents/delete/{id}', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
+
+    Route::post('/employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
+    Route::post('/upload-temp-document', [EmployeeController::class, 'uploadTempDocument'])->name('documents.uploadTempDocument');
+    Route::get('/document/preview', [EmployeeController::class, 'preview'])->name('document.preview');
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'changePassword'])->name('profile.password');
+
+    Route::resource('organizations', OrganizationController::class);
+    Route::resource('companies', CompanyController::class);
+
+    Route::prefix('/departments')->group(function () {
+        Route::post('/store', [DepartmentController::class, 'store'])->name('departments.store');
+    });
+
+    Route::prefix('/agreements')->group(function () {
+        Route::get('/index', [AgreementController::class, 'index'])->name('agreements.index');
+        Route::post('/parties/store', [DocumentController::class, 'storeParty'])->name('parties.store');
+    });
+
+    // Leave Management Routes (Admin)
+    Route::prefix('/leaves')->group(function () {
+        Route::get('/', [LeaveController::class, 'index'])->name('leaves.index');
+        Route::post('/{leaveRequest}/update-status', [LeaveController::class, 'updateStatus'])->name('leaves.updateStatus');
+
+        // Leave Type Management
+        Route::get('/types', [\App\Http\Controllers\LeaveTypeController::class, 'index'])->name('leaves.types.index');
+        Route::post('/types', [\App\Http\Controllers\LeaveTypeController::class, 'store'])->name('leaves.types.store');
+        Route::post('/types/update/{leaveType}', [\App\Http\Controllers\LeaveTypeController::class, 'update'])->name('leaves.types.update');
+        Route::post('/types/delete/{leaveType}', [\App\Http\Controllers\LeaveTypeController::class, 'destroy'])->name('leaves.types.delete');
+        Route::post('/types/update-status/{leaveType}', [\App\Http\Controllers\LeaveTypeController::class, 'updateStatus'])->name('leaves.types.updateStatus');
+    });
+
+});
+
+// ─── Employee Portal (separate guard — no admin auth needed) ──────────────────
+Route::prefix('employee')->name('employee.')->group(function () {
+    Route::get('/login',  [\App\Http\Controllers\Employee\AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Employee\AuthController::class, 'login'])->name('authenticate');
+    Route::post('/logout', [\App\Http\Controllers\Employee\AuthController::class, 'logout'])->name('logout');
+
+    Route::middleware('employee.auth')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/profile',   [\App\Http\Controllers\Employee\ProfileController::class, 'show'])->name('profile');
+        Route::post('/profile',  [\App\Http\Controllers\Employee\ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/password', [\App\Http\Controllers\Employee\ProfileController::class, 'changePassword'])->name('profile.password');
+
+        // Employee Leave Routes
+        Route::prefix('/leaves')->group(function () {
+            Route::get('/', [EmployeeLeaveController::class, 'index'])->name('leaves.index');
+            Route::get('/create', [EmployeeLeaveController::class, 'create'])->name('leaves.create');
+            Route::post('/store', [EmployeeLeaveController::class, 'store'])->name('leaves.store');
+        });
+    });
 });
 
 

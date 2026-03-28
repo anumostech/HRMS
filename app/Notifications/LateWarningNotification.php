@@ -56,6 +56,7 @@ class LateWarningNotification extends Notification
             'employee_id' => $this->employee->id,
             'employee_name' => $this->employee->name,
             'late_count' => $this->lateCount,
+            'title' => 'Late',
             'message' => $this->employee->name . ' has been late ' . $this->lateCount . ' times this month.'
         ];
     }

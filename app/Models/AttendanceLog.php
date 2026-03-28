@@ -15,6 +15,6 @@ class AttendanceLog extends Model
 
     public function user()
     {
-        return $this->belongsTo(Employee::class, 'userid', 'id');
+        return $this->belongsTo(Employee::class, 'userid', 'employee_id');
     }
 }

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('employee_id');
             $table->string('designation')->nullable();
-            $table->string('department')->nullable();
-            $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
+            $table->foreignId('department_id');
+            $table->foreignId('company_id');
             $table->date('dob')->nullable();
             $table->date('joining_date')->nullable();
             $table->string('gender')->nullable();

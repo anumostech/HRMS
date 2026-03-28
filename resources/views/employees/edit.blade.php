@@ -25,56 +25,143 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $employee->name) }}" required>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', $employee->name) }}">
                             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Designation</label>
                             <input type="text" class="form-control" name="designation" value="{{ old('designation', $employee->designation) }}">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Department</label>
-                            <input type="text" class="form-control" name="department" value="{{ old('department', $employee->department) }}">
+                            <div class="select-wrapper">
+                                <select class="form-control @error('department_id') is-invalid @enderror" name="department_id" id="departmentSelect">
+                                    <option value="">Select Department</option>
+                                    @foreach($departments as $department)
+                                    <option value="{{ $department->id }}" {{ old('department_id', $employee->department_id) == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                                    @endforeach
+                                    <option value="__new_department__" id="addDepartmentOption" class="text-center" style="background:#0D9C1E;color:#fff;">+ Add Department</option>
+                                </select>
+                            </div>
+                            @error('department_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Company <span class="text-danger">*</span></label>
-                            <select class="form-control @error('company_id') is-invalid @enderror" name="company_id" required>
-                                <option value="">Select Company</option>
-                                @foreach($companies as $company)
+                            <div class="select-wrapper">
+                                <select class="form-control @error('company_id') is-invalid @enderror" name="company_id" id="companySelect">
+                                    <option value="">Select Company</option>
+                                    @foreach($companies as $company)
                                     <option value="{{ $company->id }}" {{ old('company_id', $employee->company_id) == $company->id ? 'selected' : '' }}>{{ $company->name }}</option>
-                                @endforeach
-                            </select>
+                                    @endforeach
+                                    <option value="__new__" id="addCompanyOption" class="text-center" style="background:#0D9C1E;color:#fff;">+ Add Company</option>
+                                </select>
+                            </div>
                             @error('company_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Employee ID</label>
+                            <input type="text" class="form-control @error('employee_id') is-invalid @enderror" name="employee_id" value="{{ old('employee_id', $employee->employee_id) }}">
+                            @error('employee_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Date of Birth</label>
-                            <input type="date" class="form-control" name="dob" value="{{ old('dob', $employee->dob) }}">
+                            <input type="text" class="form-control datepicker" name="dob" value="{{ old('dob', $employee->dob ? \Carbon\Carbon::parse($employee->dob)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Date of Joining</label>
-                            <input type="date" class="form-control" name="joining_date" value="{{ old('joining_date', $employee->joining_date) }}">
+                            <input type="text" class="form-control datepicker" name="joining_date" value="{{ old('joining_date', $employee->joining_date ? \Carbon\Carbon::parse($employee->joining_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Gender</label>
-                            <select class="form-control" name="gender">
-                                <option value="">Select Gender</option>
-                                <option value="Male" {{ old('gender', $employee->gender) == 'Male' ? 'selected' : '' }}>Male</option>
-                                <option value="Female" {{ old('gender', $employee->gender) == 'Female' ? 'selected' : '' }}>Female</option>
-                                <option value="Other" {{ old('gender', $employee->gender) == 'Other' ? 'selected' : '' }}>Other</option>
-                            </select>
+                            <div class="select-wrapper">
+                                <select class="form-control" name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male" {{ old('gender', $employee->gender) == 'Male' ? 'selected' : '' }}>Male</option>
+                                    <option value="Female" {{ old('gender', $employee->gender) == 'Female' ? 'selected' : '' }}>Female</option>
+                                    <option value="Other" {{ old('gender', $employee->gender) == 'Other' ? 'selected' : '' }}>Other</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+
+                        <!-- <div class="col-md-4 mb-3">
                             <label class="form-label">Status</label>
-                            <select class="form-control" name="status">
-                                <option value="active" {{ old('status', $employee->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status', $employee->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Special Days (Birthdays, etc.)</label>
-                            <input type="text" class="form-control" name="special_days" value="{{ old('special_days', $employee->special_days) }}">
+                            <div class="select-wrapper">
+                                <select class="form-control" name="status">
+                                    <option value="active" {{ old('status', $employee->status) == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ old('status', $employee->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                            </div>
+                        </div> -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Special Days</label>
+                            <div id="specialDaysWrapper">
+                                @if(!empty($employee->special_days))
+
+                                @foreach($employee->special_days as $index => $day)
+
+                                <div class="row special-day-row mb-2">
+
+                                    <div class="col-md-5">
+                                        <input type="text"
+                                            name="special_days_name[]"
+                                            class="form-control mb-2"
+                                            value="{{ $day['name'] }}"
+                                            placeholder="Special Day Name (Birthday, Anniversary)">
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <input type="text"
+                                            name="special_days_date[]"
+                                            class="form-control mb-2 datepicker"
+                                            value="{{ $day['date'] ? \Carbon\Carbon::parse($day['date'])->format('d-m-Y') : '' }}" placeholder="Select Date">
+                                    </div>
+
+                                    <div class="col-md-2">
+
+                                        @if($loop->first)
+                                        <button type="button" class="btn btn-success addSpecialDay mb-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+                                                <path d="M8 1a.5.5 0 0 1 .5.5V7.5H14.5a.5.5 0 0 1 0 1H8.5V14.5a.5.5 0 0 1-1 0V8.5H1.5a.5.5 0 0 1 0-1H7.5V1.5A.5.5 0 0 1 8 1z" />
+                                            </svg>
+                                        </button>
+                                        @else
+                                        <button type="button" class="btn btn-danger removeSpecialDay mb-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+                                                <path d="M1.5 8a.5.5 0 0 1 .5-.5h12a.5.5 0 0 1 0 1H2a.5.5 0 0 1-.5-.5z" />
+                                            </svg>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                                @else
+                                <div class="row special-day-row mb-2">
+
+                                    <div class="col-md-5">
+                                        <input type="text"
+                                            name="special_days_name[]"
+                                            class="form-control mb-2"
+                                            placeholder="Special Day Name">
+                                    </div>
+
+                                    <div class="col-md-5">
+                                        <input type="text"
+                                            name="special_days_date[]"
+                                            class="form-control mb-2 datepicker" placeholder="Select Date">
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-success addSpecialDay mb-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+                                                <path d="M8 1a.5.5 0 0 1 .5.5V7.5H14.5a.5.5 0 0 1 0 1H8.5V14.5a.5.5 0 0 1-1 0V8.5H1.5a.5.5 0 0 1 0-1H7.5V1.5A.5.5 0 0 1 8 1z" />
+                                            </svg></button>
+                                    </div>
+
+                                </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,11 +190,11 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Passport Issued Date</label>
-                            <input type="date" class="form-control" name="passport_issued_date" value="{{ old('passport_issued_date', $employee->passport_issued_date) }}">
+                            <input type="text" class="form-control datepicker" name="passport_issued_date" value="{{ old('passport_issued_date', $employee->passport_issued_date ? \Carbon\Carbon::parse($employee->passport_issued_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Passport Expiry Date</label>
-                            <input type="date" class="form-control" name="passport_expiry_date" value="{{ old('passport_expiry_date', $employee->passport_expiry_date) }}">
+                            <input type="text" class="form-control datepicker" name="passport_expiry_date" value="{{ old('passport_expiry_date', $employee->passport_expiry_date ? \Carbon\Carbon::parse($employee->passport_expiry_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Place of Birth</label>
@@ -125,22 +212,23 @@
                             <label class="form-label">Address</label>
                             <textarea class="form-control" name="address" rows="2">{{ old('address', $employee->address) }}</textarea>
                         </div>
-                        
+
                         @php
-                            $passportDocs = [
-                                'passport_1st_page' => 'Passport 1st Page',
-                                'passport_2nd_page' => 'Passport 2nd Page',
-                                'passport_outer_page' => 'Outer Page',
-                                'passport_id_page' => 'ID Page'
-                            ];
+                        $passportDocs = [
+                        'passport_1st_page' => 'Passport 1st Page',
+                        'passport_2nd_page' => 'Passport 2nd Page',
+                        'passport_outer_page' => 'Outer Page',
+                        'passport_id_page' => 'ID Page'
+                        ];
                         @endphp
-                        
+
                         @foreach($passportDocs as $field => $label)
                         <div class="col-md-3 mb-3">
                             <label class="form-label">{{ $label }}</label>
-                            <input type="file" class="form-control mb-1" name="{{ $field }}" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" class="form-control mb-1 document-upload" data-field="{{ $field }}" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="{{ $field }}">
                             @if($employee->$field)
-                                <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
+                            <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
                             @endif
                         </div>
                         @endforeach
@@ -163,17 +251,18 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Issued Date</label>
-                            <input type="date" class="form-control" name="visa_issued_date" value="{{ old('visa_issued_date', $employee->visa_issued_date) }}">
+                            <input type="text" class="form-control datepicker" name="visa_issued_date" value="{{ old('visa_issued_date', $employee->visa_issued_date ? \Carbon\Carbon::parse($employee->visa_issued_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Expiry Date</label>
-                            <input type="date" class="form-control" name="visa_expiry_date" value="{{ old('visa_expiry_date', $employee->visa_expiry_date) }}">
+                            <input type="text" class="form-control datepicker" name="visa_expiry_date" value="{{ old('visa_expiry_date', $employee->visa_expiry_date ? \Carbon\Carbon::parse($employee->visa_expiry_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Attach Visa Page</label>
-                            <input type="file" class="form-control mb-1" name="visa_page" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" class="form-control mb-1 document-upload" data-field="visa_page" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="visa_page">
                             @if($employee->visa_page)
-                                <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
+                            <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
                             @endif
                         </div>
                     </div>
@@ -194,17 +283,18 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Issued Date</label>
-                            <input type="date" class="form-control" name="labor_issued_date" value="{{ old('labor_issued_date', $employee->labor_issued_date) }}">
+                            <input type="text" class="form-control datepicker" name="labor_issued_date" value="{{ old('eid_issued_date', $employee->eid_issued_date ? \Carbon\Carbon::parse($employee->eid_issued_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Expiry Date</label>
-                            <input type="date" class="form-control" name="labor_expiry_date" value="{{ old('labor_expiry_date', $employee->labor_expiry_date) }}">
+                            <input type="text" class="form-control datepicker" name="labor_expiry_date" value="{{ old('labor_issued_date', $employee->labor_issued_date ? \Carbon\Carbon::parse($employee->labor_issued_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Attach Labor Card</label>
-                            <input type="file" class="form-control mb-1" name="labor_card" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" class="form-control mb-1 document-upload" data-field="labor_card" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="labor_card">
                             @if($employee->labor_card)
-                                <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
+                            <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
                             @endif
                         </div>
                     </div>
@@ -226,24 +316,26 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Issued Date</label>
-                            <input type="date" class="form-control" name="eid_issued_date" value="{{ old('eid_issued_date', $employee->eid_issued_date) }}">
+                            <input type="text" class="form-control datepicker" name="eid_issued_date" value="{{ old('labor_issued_date', $employee->labor_issued_date ? \Carbon\Carbon::parse($employee->labor_issued_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Expiry Date</label>
-                            <input type="date" class="form-control" name="eid_expiry_date" value="{{ old('eid_expiry_date', $employee->eid_expiry_date) }}">
+                            <input type="text" class="form-control datepicker" name="eid_expiry_date" value="{{ old('labor_issued_date', $employee->labor_issued_date ? \Carbon\Carbon::parse($employee->labor_issued_date)->format('d-m-Y') : '') }}" placeholder="Select Date">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Attach 1st Page</label>
-                            <input type="file" class="form-control mb-1" name="eid_1st_page" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" class="form-control mb-1 document-upload" data-field="eid_1st_page" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="eid_1st_page">
                             @if($employee->eid_1st_page)
-                                <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
+                            <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
                             @endif
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Attach 2nd Page</label>
-                            <input type="file" class="form-control mb-1" name="eid_2nd_page" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" class="form-control mb-1 document-upload" data-field="eid_2nd_page" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="eid_2nd_page">
                             @if($employee->eid_2nd_page)
-                                <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
+                            <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
                             @endif
                         </div>
                     </div>
@@ -261,28 +353,31 @@
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             <label class="form-label">Dependents (Yes/No)</label>
-                            <select class="form-control" name="dependents">
-                                <option value="No" {{ old('dependents', $employee->dependents) == 'No' ? 'selected' : '' }}>No</option>
-                                <option value="Yes" {{ old('dependents', $employee->dependents) == 'Yes' ? 'selected' : '' }}>Yes</option>
-                            </select>
+                            <div class="select-wrapper">
+                                <select class="form-control" name="dependents">
+                                    <option value="No" {{ old('dependents', $employee->dependents) == 'No' ? 'selected' : '' }}>No</option>
+                                    <option value="Yes" {{ old('dependents', $employee->dependents) == 'Yes' ? 'selected' : '' }}>Yes</option>
+                                </select>
+                            </div>
                         </div>
                         @php
-                            $otherDocs = [
-                                'educational_1st_page' => 'Education 1st Page',
-                                'educational_2nd_page' => 'Education 2nd Page',
-                                'home_country_id_proof' => 'Home Country ID Proof'
-                            ];
+                        $otherDocs = [
+                        'educational_1st_page' => 'Education 1st Page',
+                        'educational_2nd_page' => 'Education 2nd Page',
+                        'home_country_id_proof' => 'Home Country ID Proof'
+                        ];
                         @endphp
                         @foreach($otherDocs as $field => $label)
                         <div class="col-md-3 mb-3">
                             <label class="form-label">{{ $label }}</label>
-                            <input type="file" class="form-control mb-1" name="{{ $field }}" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" class="form-control mb-1 document-upload" data-field="{{ $field }}" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="hidden" name="{{ $field }}">
                             @if($employee->$field)
-                                <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
+                            <small class="text-success"><i class="fe fe-check-circle"></i> File uploaded</small>
                             @endif
                         </div>
                         @endforeach
-                        
+
                         <div class="col-md-3 mb-3">
                             <label class="form-label">Company Mobile Number</label>
                             <input type="text" class="form-control" name="company_mobile_number" value="{{ old('company_mobile_number', $employee->company_mobile_number) }}">
@@ -317,4 +412,235 @@
         </div>
     </div>
 </form>
+<div class="modal fade" id="createCompanyModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Add Company Name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="newCompanyName" class="form-control" placeholder="Enter company name">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="saveCompanyBtn">Create</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="createDepartmentModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Add Department Name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="newDepartmentName" class="form-control" placeholder="Enter department name">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-primary" id="saveDepartmentBtn">Create</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@endsection
+@section('scripts')
+<script>
+    $(document).on('click', '.addSpecialDay', function() {
+
+        let html = `
+            <div class="row special-day-row mb-2">
+
+                <div class="col-md-5">
+                    <input type="text" name="special_days_name[]" class="form-control" placeholder="Special Day Name">
+                </div>
+
+                <div class="col-md-5">
+                    <input type="text" name="special_days_date[]" class="form-control datepicker" placeholder="Select Date">
+                </div>
+
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger removeSpecialDay">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 16 16">
+                            <path d="M1.5 8a.5.5 0 0 1 .5-.5h12a.5.5 0 0 1 0 1H2a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>`;
+
+        $('#specialDaysWrapper').append(html);
+
+        // Reinitialize datepicker for new fields
+        $('.datepicker').datepicker({
+            format: "dd-mm-yyyy",
+            autoclose: true
+        });
+
+    });
+
+
+    $(document).on('click', '.removeSpecialDay', function() {
+
+        $(this).closest('.special-day-row').remove();
+
+    });
+    $(document).on('change', '.document-upload', function() {
+
+        let file = this.files[0];
+        let field = $(this).data('field');
+
+        let formData = new FormData();
+        formData.append('file', file);
+        formData.append('field', field);
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+        axios.post('{{ route("documents.uploadTempDocument") }}', formData)
+            .then(function(response) {
+                if (response.data.success == true) {
+                    $("input[name='" + field + "']").val(response.data.path);
+
+                    // Swal.fire({
+                    //     toast: true,
+                    //     position: 'top-end',
+                    //     icon: 'success',
+                    //     title: "Uploaded successfully",
+                    //     showConfirmButton: false,
+                    //     timer: 1500
+                    // });
+                }
+
+            })
+            .catch(function() {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: field + "uploading failed",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+
+    });
+    $('#companySelect').on('change', function() {
+
+        if ($(this).val() === '__new__') {
+
+            let modal = new bootstrap.Modal(document.getElementById('createCompanyModal'));
+            modal.show();
+
+        }
+
+    });
+
+    $('#saveCompanyBtn').click(function() {
+
+        let companyName = $('#newCompanyName').val();
+
+        if (!companyName) {
+            alert("Company name is required");
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('companies.store') }}",
+            type: "POST",
+            data: {
+                name: companyName,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(response) {
+
+                let newOption = `<option value="${response.company.id}">
+                                ${response.company.name}
+                             </option>`;
+
+                $('#addCompanyOption').before(newOption);
+
+                $('#companySelect').val(response.company.id).trigger('change');
+
+                $('#newCompanyName').val('');
+
+                bootstrap.Modal.getInstance(document.getElementById('createCompanyModal')).hide();
+
+            }
+        });
+
+    });
+
+    $('#createCompanyModal').on('hidden.bs.modal', function() {
+
+        if ($('#companySelect').val() === '__new__') {
+            $('#companySelect').val('');
+        }
+
+    });
+
+
+    $('#departmentSelect').on('change', function() {
+
+        if ($(this).val() === '__new_department__') {
+
+            let modal = new bootstrap.Modal(document.getElementById('createDepartmentModal'));
+            modal.show();
+
+        }
+
+    });
+
+    $('#saveDepartmentBtn').click(function() {
+
+        let departmentName = $('#newDepartmentName').val();
+
+        if (!departmentName) {
+            alert("Department name is required");
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('departments.store') }}",
+            type: "POST",
+            data: {
+                name: departmentName,
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(response) {
+
+                let newOption = `<option value="${response.department.id}">
+                                ${response.department.name}
+                             </option>`;
+
+                $('#addDepartmentOption').before(newOption);
+
+                $('#departmentSelect').val(response.department.id).trigger('change');
+
+                $('#newDepartmentName').val('');
+
+                bootstrap.Modal.getInstance(document.getElementById('createDepartmentModal')).hide();
+
+            }
+        });
+
+    });
+
+    $('#createDepartmentModal').on('hidden.bs.modal', function() {
+
+        if ($('#departmentSelect').val() === '__new_department__') {
+            $('#departmentSelect').val('');
+        }
+
+    });
+</script>
 @endsection

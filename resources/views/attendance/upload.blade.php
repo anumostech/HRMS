@@ -24,25 +24,27 @@
             </div>
             <div class="card-body">
                 @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
 
                 <form action="{{ route('attendance.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-3">
                         <label for="company_id" class="form-label">Select Company</label>
-                        <select name="company_id" id="company_id" class="form-control" required>
-                            <option value="">-- Select Company --</option>
-                            @foreach($companies as $company)
-                                <option value="{{ $company->id }}">{{ $company->name }}</option>
-                            @endforeach
-                        </select>
+                        <div class="select-wrapper">
+                            <select name="company_id" id="company_id" class="form-control" required>
+                                <option value="">Select Company</option>
+                                @foreach($companies as $company)
+                                <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group mb-4">
