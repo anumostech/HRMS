@@ -57,41 +57,45 @@
 <div class="row mb-4">
     <!-- Total Employees -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card stat-card h-100">
-            <div class="card-body p-4">
-                <div class="stat-icon bg-soft-primary">
-                    <i class="fe fe-users"></i>
-                </div>
-                <h6 class="text-muted mb-2 fw-semibold">Total Employees</h6>
-                <div class="d-flex align-items-end justify-content-between">
-                    <div>
-                        <h2 class="mb-0 fw-bold" id="stat-total-val">{{ $todayStats['present'] + $todayStats['absent'] }}</h2>
-                        <span class="text-success small fw-bold"><i class="fe fe-trending-up me-1"></i>Active Staff</span>
+        <a href="{{ route('employees.index') }}">
+            <div class="card stat-card h-100">
+                <div class="card-body p-4">
+                    <div class="stat-icon bg-soft-primary">
+                        <i class="fe fe-users"></i>
+                    </div>
+                    <h6 class="text-muted mb-2 fw-semibold">Total Employees</h6>
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div>
+                            <h2 class="mb-0 fw-bold" id="stat-total-val">{{ $todayStats['present'] + $todayStats['absent'] }}</h2>
+                            <span class="text-success small fw-bold"><i class="fe fe-trending-up me-1"></i>Active Staff</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Punch-In Status -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card stat-card h-100">
-            <div class="card-body p-4">
-                <div class="stat-icon bg-soft-success">
-                    <i class="fe fe-log-in"></i>
-                </div>
-                <h6 class="text-muted mb-2 fw-semibold">Punched In Today</h6>
-                <div class="d-flex align-items-end justify-content-between">
-                    <div>
-                        <h2 class="mb-0 fw-bold text-success">{{ $todayStats['punched_in'] }}</h2>
-                        <span class="text-muted small">From total staff</span>
+        <a href="{{ route('attendance.punchInToday') }}">
+            <div class="card stat-card h-100">
+                <div class="card-body p-4">
+                    <div class="stat-icon bg-soft-success">
+                        <i class="fe fe-log-in"></i>
                     </div>
-                    <div class="chart-mini">
-                        <canvas id="miniChartIn" width="60" height="30"></canvas>
+                    <h6 class="text-muted mb-2 fw-semibold">Punched In Today</h6>
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div>
+                            <h2 class="mb-0 fw-bold text-success">{{ $todayStats['punched_in'] }}</h2>
+                            <span class="text-muted small">From total staff</span>
+                        </div>
+                        <div class="chart-mini">
+                            <canvas id="miniChartIn" width="60" height="30"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Late Employees -->
@@ -850,7 +854,8 @@
                                 </select>
                                 @error('share_with') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-                            <div class="col-md-12 mb-3">
+                        </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Folders <span class="text-danger">*</span></label>
                                 <div class="select-wrapper">
                                     <select class="form-control @error('company_id') is-invalid @enderror" name="folder" id="folderSelect">
@@ -863,7 +868,7 @@
                                     @error('folder') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">File Expiry Date</label>
                                 <input type="text" class="form-control datepicker" name="expiry_date" value="" placeholder="Select date">
                                 <input type="hidden" name="type" id="type">
@@ -1081,9 +1086,6 @@
             }
 
         });
-
-
-
 
         $('#agreementSelect').on('change', function() {
 
