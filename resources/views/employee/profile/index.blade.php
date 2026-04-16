@@ -23,8 +23,8 @@
         <div class="emp-card text-center">
             <img src="{{ $employee->avatar_url }}" alt="Avatar"
                 style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:4px solid #e0e7ff;margin-bottom:1rem;">
-            <h5 style="font-weight:700;color:#1a1a2e;">{{ $employee->name }}</h5>
-            <p class="text-muted" style="font-size:0.875rem;">{{ $employee->designation ?? 'Employee' }}</p>
+            <h5 style="font-weight:700;color:#1a1a2e;">{{ Auth::guard('employee')->user()->first_name }}</h5>
+            <p class="text-muted" style="font-size:0.875rem;">{{ $employee->designation->name ?? 'Employee' }}</p>
             @if($employee->department)
             <span class="badge" style="background:#eef2ff;color:#6366f1;border:1px solid #ddd6fe;">{{ $employee->department->name }}</span>
             @endif

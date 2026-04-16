@@ -83,8 +83,8 @@
                             @forelse($attendance as $key => $record)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $record->company->name }}</td>
-                                <td>{{ $record->user->name ?? 'N/A' }}</td>
+                                <td>{{ $record->company->name ?? '' }}</td>
+                                <td>{{ $record->user->name ?? '' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($record->date)->format('d-m-Y') }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2"><span>
@@ -131,14 +131,5 @@
                             el.style.display = (value === 'custom') ? 'block' : 'none';
                         });
                     }
-
-                    $(function(e) {
-                        $('#params-datatable').DataTable({
-                            language: {
-                                searchPlaceholder: 'Search...',
-                                sSearch: '',
-                            }
-                        });
-                    });
                 </script>
                 @endsection

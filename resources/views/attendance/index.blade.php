@@ -190,7 +190,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $record->company->company_name }}</td>
-                                <td>{{ $record->user->name ?? 'N/A' }}</td>
+                                <td>{{ $record->user?->first_name.' '.$record->user?->last_name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($record->date)->format('d-m-Y') }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2"><span>
