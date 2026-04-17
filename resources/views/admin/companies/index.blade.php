@@ -23,7 +23,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover datatable-basic text-nowrap">
+                    <table class="table table-hover text-nowrap" id="basic-datatable">
                         <thead>
                             <tr>
                                 <th>Logo</th>

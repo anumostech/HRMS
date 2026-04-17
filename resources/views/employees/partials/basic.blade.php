@@ -58,6 +58,8 @@
                 @foreach($designations as $designation)
                     <option value="{{ $designation->id }}" {{ old('designation_id', $employee->designation_id) == $designation->id ? 'selected' : '' }}>{{ $designation->name }}</option>
                 @endforeach
+                <option value="__new_designation__" id="addDesignationOption" class="text-center"
+                    style="background:#0D9C1E;color:#fff;">+ Add Designation</option>
             </select>
             @error('designation_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>

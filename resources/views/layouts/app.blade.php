@@ -320,6 +320,13 @@
                                     </a>
                                 </li>
                                 <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('departments.*') ? 'active' : '' }}"
+                                        href="{{ route('departments.index') }}">
+                                        <i class="side-menu__icon fe fe-layers"></i>
+                                        <span class="side-menu__label">Departments</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
                                     <a class="sidenav-menu-item {{ request()->routeIs('designations.*') ? 'active' : '' }}"
                                         href="{{ route('designations.index') }}">
                                         <i class="side-menu__icon fe fe-tag"></i>
@@ -338,6 +345,13 @@
                                         href="{{ route('task_reports.index') }}">
                                         <i class="side-menu__icon fe fe-clipboard"></i>
                                         <span class="side-menu__label">Task Reports</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('meetings.*') ? 'active' : '' }}"
+                                        href="#">
+                                        <i class="side-menu__icon fe fe-calendar"></i>
+                                        <span class="side-menu__label">Meetings</span>
                                     </a>
                                 </li>
                                 <li class="slide">
@@ -559,7 +573,7 @@
             // Initialize by ID (for single table pages using legacy ID)
             if ($('#basic-datatable').length && !$.fn.DataTable.isDataTable('#basic-datatable')) {
                 $('#basic-datatable').DataTable({
-                    pageLength: 10,
+                    pageLength: 50,
                     language: {
                         search: "",
                         searchPlaceholder: "Search records...",

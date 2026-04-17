@@ -16,7 +16,14 @@ class Company extends Model
         'phone',
         'email',
         'logo',
-        'address'
+        'address',
+        'trade_license_name',
+        'trade_license_number',
+        'trade_license_expiry',
+        'trade_license_attachment',
+        'establishment_card_number',
+        'establishment_card_expiry',
+        'establishment_card_attachment',
     ];
 
     public function organization()

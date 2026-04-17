@@ -98,6 +98,7 @@ class StoreEmployeeRequest extends FormRequest
             'passport_id_page' => 'nullable|string',
             'visa_page' => 'nullable|string',
             'labor_card' => 'nullable|string',
+            'labor_contract' => 'nullable|string',
             'eid_1st_page' => 'nullable|string',
             'eid_2nd_page' => 'nullable|string',
             'educational_1st_page' => 'nullable|string',
@@ -106,6 +107,7 @@ class StoreEmployeeRequest extends FormRequest
 
             // Details
             'visa_number' => 'nullable|string|max:255',
+            'visa_type' => 'nullable|string|max:255',
             'visa_issued_date' => 'nullable|date',
             'visa_expiry_date' => 'nullable|date',
             'labor_number' => 'nullable|string|max:255',

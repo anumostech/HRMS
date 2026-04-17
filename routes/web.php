@@ -25,8 +25,10 @@ use Dom\Document;
 use Illuminate\Support\Facades\Artisan;
 
 // Auth Routes
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');;
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');;
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+;
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+;
 Route::post('/login', [LoginController::class, 'login'])->name('authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -78,9 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('companies', CompanyController::class);
     Route::get('/companies/by-organization/{organizationId}', [CompanyController::class, 'getByOrganization'])->name('companies.by_organization');
 
-    Route::prefix('/departments')->group(function () {
-        Route::post('/store', [DepartmentController::class, 'store'])->name('departments.store');
-    });
+    Route::resource('departments', DepartmentController::class);
 
     Route::prefix('/agreements')->group(function () {
         Route::get('/index', [AgreementController::class, 'index'])->name('agreements.index');
@@ -114,14 +114,14 @@ Route::middleware('auth')->group(function () {
 
 // ─── Employee Portal (separate guard — no admin auth needed) ──────────────────
 Route::prefix('employee')->name('employee.')->group(function () {
-    Route::get('/login',  [\App\Http\Controllers\Employee\AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', [\App\Http\Controllers\Employee\AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Employee\AuthController::class, 'login'])->name('authenticate');
     Route::post('/logout', [\App\Http\Controllers\Employee\AuthController::class, 'logout'])->name('logout');
 
     Route::middleware('employee.auth')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/profile',   [\App\Http\Controllers\Employee\ProfileController::class, 'show'])->name('profile');
-        Route::post('/profile',  [\App\Http\Controllers\Employee\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile', [\App\Http\Controllers\Employee\ProfileController::class, 'show'])->name('profile');
+        Route::post('/profile', [\App\Http\Controllers\Employee\ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/password', [\App\Http\Controllers\Employee\ProfileController::class, 'changePassword'])->name('profile.password');
 
         // Employee Leave Routes

@@ -71,6 +71,8 @@ return new class extends Migration {
             $table->string('company_email')->nullable();
             $table->string('personal_email')->nullable();
             $table->string('home_country_id_proof')->nullable();
+            $table->string('visa_type')->nullable();
+            $table->string('labor_contract')->nullable();
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();

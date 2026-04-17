@@ -24,12 +24,12 @@
             </div>
             <div class="card-body">
                 <div class="text-center mb-4">
-                    <h4 class="mb-0 fw-bold">{{ $employee->name }}</h4>
-                    <p class="text-muted">{{ $employee->designation }} | {{ $employee->department }}</p>
+                    <h4 class="mb-0 fw-bold">{{ $employee->first_name }} {{ $employee->last_name }}</h4>
+                    <p class="text-muted">{{ $employee->designation->name }} | {{ $employee->department->name }}</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Company <span class="fw-semibold">{{ $employee->company->name ?? 'N/A' }}</span>
+                        Company <span class="fw-semibold">{{ $employee->company->company_name ?? 'N/A' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Joining Date <span class="fw-semibold">{{ $employee->joining_date ?? 'N/A' }}</span>
@@ -78,6 +78,7 @@
                     'Educational 1' => 'educational_1st_page',
                     'Educational 2' => 'educational_2nd_page',
                     'Home ID' => 'home_country_id_proof',
+                    'Labor Contract' => 'labor_contract',
                     ];
                     @endphp
 
@@ -124,7 +125,7 @@
                         <p><strong>Father Name:</strong> {{ $employee->father_name ?? 'N/A' }}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Visa Number:</strong> {{ $employee->visa_number ?? 'N/A' }}</p>
+                        <p><strong>Visa Number:</strong> {{ $employee->visa_number ?? 'N/A' }} ({{ $employee->visa_type ?? 'N/A' }})</p>
                         <p><strong>Labor Number:</strong> {{ $employee->labor_number ?? 'N/A' }}</p>
                         <p><strong>EID Number:</strong> {{ $employee->eid_number ?? 'N/A' }}</p>
                     </div>

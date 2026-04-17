@@ -2,149 +2,170 @@
 
 @section('title', 'Edit Company')
 
+@section('styles')
+    <style>
+        #wizardTabs .nav-link {
+            cursor: pointer;
+        }
+
+        .wizard-step {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+@endsection
+
 @section('content')
-<div class="page-header mt-4">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="page-header">
+        <h1 class="page-title">Edit Company</h1>
         <div>
-            <h1 class="page-title">Edit Company: {{ $company->company_name }}</h1>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('companies.index', ['organization_id' => $company->organization_id]) }}">Companies</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                <li class="breadcrumb-item"><a href="{{ route('companies.index') }}">Companies</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Company</li>
             </ol>
         </div>
     </div>
-</div>
 
-<div class="row mt-4">
-    <div class="col-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-header border-bottom">
-                <h3 class="card-title">Company Details</h3>
-            </div>
+    <form action="{{ route('companies.update', $company->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        <div class="card">
             <div class="card-body">
-                <form action="{{ route('companies.update', $company->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label" for="organization_id">Parent Organization <span class="text-danger">*</span></label>
-                            <select name="organization_id" id="organization_id" class="form-select select2" required>
-                                <option value="">Select Organization</option>
-                                @foreach($organizations as $org)
-                                    <option value="{{ $org->id }}" {{ (old('organization_id', $company->organization_id) == $org->id) ? 'selected' : '' }}>
-                                        {{ $org->org_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label" for="company_name">Company Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="company_name" value="{{ old('company_name', $company->company_name) }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label" for="phone">Phone</label>
-                            <input type="text" class="form-control" name="phone" value="{{ old('phone', $company->phone) }}">
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label" for="email">Email</label>
-                            <input type="email" class="form-control" name="email" value="{{ old('email', $company->email) }}">
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label" for="address">Address</label>
-                            <textarea class="form-control" name="address" rows="3">{{ old('address', $company->address) }}</textarea>
-                        </div>
 
-                        <div class="col-md-12 mt-4 text-end">
-                            <button type="submit" class="btn btn-primary px-5">Update Company</button>
-                            <a href="{{ route('companies.index', ['organization_id' => $company->organization_id]) }}" class="btn btn-light ms-2 px-5">Cancel</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+                <!-- Step Tabs -->
+                <ul class="nav nav-pills mb-4" id="wizardTabs">
+                    <li class="nav-item"><a class="nav-link active" data-step="1">Basic Details</a></li>
+                    <li class="nav-item"><a class="nav-link" data-step="2">Trade License</a></li>
+                    <li class="nav-item"><a class="nav-link" data-step="3">Establishment Card</a></li>
+                </ul>
 
-    <!-- Logo Upload with Preview Panel -->
-    <div class="col-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header border-bottom">
-                <h3 class="card-title">Company Logo</h3>
-            </div>
-            <div class="card-body">
-                <div class="text-center">
-                    <div id="logo-preview-container" class="mb-4">
-                        @if($company->logo)
-                            <img id="logo-preview" src="{{ asset('storage/' . $company->logo) }}" alt="Logo Preview" class="avatar avatar-xxl rounded-circle shadow-sm mx-auto" style="width:120px; height:120px; object-fit: cover;">
-                            <div id="logo-placeholder" class="avatar avatar-xxl rounded-circle bg-light text-muted d-flex align-items-center justify-content-center mx-auto d-none" style="width:120px; height:120px;">
-                                <i class="fe fe-image fs-30"></i>
-                            </div>
-                        @else
-                            <div id="logo-placeholder" class="avatar avatar-xxl rounded-circle bg-light text-muted d-flex align-items-center justify-content-center mx-auto" style="width:120px; height:120px;">
-                                <i class="fe fe-image fs-30"></i>
-                            </div>
-                            <img id="logo-preview" src="#" alt="Logo Preview" class="avatar avatar-xxl rounded-circle shadow-sm mx-auto d-none" style="width:120px; height:120px; object-fit: cover;">
-                        @endif
-                    </div>
-                    <div>
-                        <!-- Hidden logo input is added via JS to the form -->
-                    </div>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill mb-2" id="btn-upload">
-                        <i class="fe fe-upload me-2"></i>Change Logo
-                    </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill mb-2 {{ $company->logo ? '' : 'd-none' }}" id="btn-remove-logo">
-                        <i class="fe fe-trash-2 me-2"></i>Remove
-                    </button>
-                    <p class="text-muted small">Max size: 2MB. JPG, PNG, SVG</p>
+                <!-- Step Content -->
+                <div class="wizard-step" id="step-1">
+                    <h5 class="mb-4">Company Basic Information</h5>
+                    @include('admin.companies.partials.basic')
                 </div>
+
+                <div class="wizard-step d-none" id="step-2">
+                    <h5 class="mb-4">Trade License Details</h5>
+                    @include('admin.companies.partials.trade_license')
+                </div>
+
+                <div class="wizard-step d-none" id="step-3">
+                    <h5 class="mb-4">Establishment Card Details</h5>
+                    @include('admin.companies.partials.establishment_card')
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="card-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-light" id="prevBtn">
+                    << Previous</button>
+                        <button type="button" class="btn btn-primary" id="nextBtn">Next >></button>
+                        <button type="submit" class="btn btn-success d-none" id="submitBtn">Update Company</button>
             </div>
         </div>
-    </div>
-</div>
+    </form>
+@endsection
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if ($.fn.select2) {
-            $('.select2').select2({
-                placeholder: 'Select Organization',
-                width: '100%'
-            });
+@section('scripts')
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function showStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(el => el.classList.add('d-none'));
+            document.getElementById('step-' + step).classList.remove('d-none');
+
+            document.querySelectorAll('#wizardTabs .nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+
+            // Buttons
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-block';
+            document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'inline-block';
+            document.getElementById('submitBtn').classList.toggle('d-none', step !== totalSteps);
         }
 
-        const logoInput = document.createElement('input');
-        logoInput.type = 'file';
-        logoInput.name = 'logo';
-        logoInput.className = 'd-none';
-        logoInput.accept = 'image/*';
-        document.querySelector('form').appendChild(logoInput);
-
-        const btnUpload = document.getElementById('btn-upload');
-        const btnRemove = document.getElementById('btn-remove-logo');
-        const logoPreview = document.getElementById('logo-preview');
-        const logoPlaceholder = document.getElementById('logo-placeholder');
-
-        btnUpload.addEventListener('click', () => logoInput.click());
-
-        logoInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    logoPreview.src = e.target.result;
-                    logoPreview.classList.remove('d-none');
-                    logoPlaceholder.classList.add('d-none');
-                    btnRemove.classList.remove('d-none');
+        function validateCurrentStep() {
+            let stepEl = document.getElementById('step-' + currentStep);
+            if (!stepEl) return true;
+            
+            let inputs = stepEl.querySelectorAll('input, select, textarea');
+            for (let i = 0; i < inputs.length; i++) {
+                if (!inputs[i].checkValidity()) {
+                    inputs[i].reportValidity();
+                    return false;
                 }
-                reader.readAsDataURL(this.files[0]);
+            }
+            return true;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (!validateCurrentStep()) return;
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
             }
         });
 
-        btnRemove.addEventListener('click', () => {
-            logoInput.value = '';
-            logoPreview.src = '#';
-            logoPreview.classList.add('d-none');
-            logoPlaceholder.classList.remove('d-none');
-            btnRemove.classList.add('d-none');
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
         });
-    });
-</script>
+
+        // Click on tabs
+        document.querySelectorAll('#wizardTabs .nav-link').forEach(tab => {
+            tab.addEventListener('click', function () {
+                let targetStep = parseInt(this.dataset.step);
+                if (targetStep !== currentStep) {
+                    if (!validateCurrentStep()) return;
+                    currentStep = targetStep;
+                    showStep(currentStep);
+                }
+            });
+        });
+
+        // AJAX File Upload
+        $(document).on('change', '.document-upload', function () {
+            let file = this.files[0];
+            let field = $(this).data('field');
+            let formData = new FormData();
+            formData.append('file', file);
+            formData.append('field', field);
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+
+            axios.post('{{ route("documents.uploadTempDocument") }}', formData)
+                .then(function (response) {
+                    if (response.data.success == true) {
+                        $("input[name='" + field + "']").val(response.data.path);
+                    }
+                })
+                .catch(function () {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: field + " uploading failed",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+        });
+
+        // Init
+        showStep(currentStep);
+    </script>
 @endsection

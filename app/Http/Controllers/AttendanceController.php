@@ -59,7 +59,7 @@ class AttendanceController extends Controller
             $query->whereHas('user', function ($q) use ($request) {
                 $q->where(function ($subQuery) use ($request) {
                     $subQuery->where('first_name', 'like', '%' . $request->employee_name . '%')
-                             ->orWhere('last_name', 'like', '%' . $request->employee_name . '%');
+                        ->orWhere('last_name', 'like', '%' . $request->employee_name . '%');
                 });
             });
         }
@@ -123,7 +123,8 @@ class AttendanceController extends Controller
         })->count();
 
         $punchedLate = $todayLogs->filter(function ($log) {
-            if (!$log->punch_in) return false;
+            if (!$log->punch_in)
+                return false;
 
             $time = Carbon::parse($log->punch_in)->format('H:i:s');
 

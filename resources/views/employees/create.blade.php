@@ -125,6 +125,27 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="createDesignationModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Designation Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text" id="newDesignationName" class="form-control" placeholder="Enter designation name">
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" id="saveDesignationBtn">Create</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
     <script>
@@ -374,6 +395,59 @@
 
             if ($('#departmentSelect').val() === '__new_department__') {
                 $('#departmentSelect').val('');
+            }
+
+        });
+
+        $('#designationSelect').on('change', function () {
+
+            if ($(this).val() === '__new_designation__') {
+
+                let modal = new bootstrap.Modal(document.getElementById('createDesignationModal'));
+                modal.show();
+            }
+
+        });
+
+        $('#saveDesignationBtn').click(function () {
+
+            let designationName = $('#newDesignationName').val();
+
+            if (!designationName) {
+                alert("Designation name is required");
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('designations.store') }}",
+                type: "POST",
+                data: {
+                    name: designationName,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function (response) {
+
+                    let newOption = `<option value="${response.designation.id}">
+                                    ${response.designation.name}
+                                 </option>`;
+
+                    $('#addDesignationOption').before(newOption);
+
+                    $('#designationSelect').val(response.designation.id).trigger('change');
+
+                    $('#newDesignationName').val('');
+
+                    bootstrap.Modal.getInstance(document.getElementById('createDesignationModal')).hide();
+
+                }
+            });
+
+        });
+
+        $('#createDesignationModal').on('hidden.bs.modal', function () {
+
+            if ($('#designationSelect').val() === '__new_designation__') {
+                $('#designationSelect').val('');
             }
 
         });

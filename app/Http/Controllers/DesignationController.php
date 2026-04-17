@@ -26,10 +26,17 @@ class DesignationController extends Controller
             'default_punch_access' => 'boolean'
         ]);
 
-        Designation::create([
+        $designation = Designation::create([
             'name' => $request->name,
             'default_punch_access' => $request->has('default_punch_access')
         ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'designation' => $designation
+            ]);
+        }
 
         return redirect()->route('designations.index')->with('success', 'Designation created successfully.');
     }

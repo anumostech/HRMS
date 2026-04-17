@@ -32,7 +32,7 @@
                     <a href="{{ route('employees.index', ['status' => 'inactive']) }}" class="btn btn-sm btn-{{ $status == 'inactive' ? 'danger' : 'outline-danger' }}">Inactive</a>
                 </div>
 
-                <div class="table-responsive mt-2">
+                <div class="table-responsive mt-2">`
                     <table class="table table-modern text-nowrap" id="basic-datatable">
                         <thead>
                             <tr>

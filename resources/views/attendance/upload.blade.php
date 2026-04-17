@@ -35,7 +35,7 @@
 
                 <form id="attendanceUploadForm" enctype="multipart/form-data">
                     @csrf
-                    <div class="form-group mb-3">
+                    <!-- <div class="form-group mb-3">
                         <label for="company_id" class="form-label">Select Company</label>
                         <div class="select-wrapper">
                             <select name="company_id" id="company_id" class="form-control" required>
@@ -45,7 +45,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group mb-4">
                         <label for="file" class="form-label">Attendance File</label>
