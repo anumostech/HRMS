@@ -113,7 +113,7 @@ class AttendanceController extends Controller
 
         $activeEmployees = Employee::count();
         $inactiveEmployees = Employee::onlyInactive()->count();
-        $totalEmployees = $activeEmployees + $inactiveEmployees;
+        $totalEmployees = $activeEmployees;
 
         $todayLogs = AttendanceLog::whereDate('log_date', $today)->get();
         $yesterdaysLogs = AttendanceLog::whereDate('log_date', $yesterday)->get();

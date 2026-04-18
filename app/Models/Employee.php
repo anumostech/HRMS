@@ -105,7 +105,6 @@ class Employee extends Authenticatable
         'personal_email',
         'home_country_id_proof',
         'status',
-        'total_leaves_allocated',
         'password',
         'avatar',
     ];
@@ -151,6 +150,65 @@ class Employee extends Authenticatable
     public function leaveRequests()
     {
         return $this->hasMany(LeaveRequest::class);
+    }
+
+    public function leaveAllocations()
+    {
+        return $this->hasMany(LeaveAllocation::class);
+    }
+
+    /**
+     * Get leave balance for a specific leave type
+     */
+    public function getLeaveBalance($leaveTypeId, $year = null)
+    {
+        $year = $year ?? date('Y');
+        
+        $allocated = $this->leaveAllocations()
+            ->where('leave_type_id', $leaveTypeId)
+            ->where('year', $year)
+            ->sum('allocated_days');
+            
+        $taken = $this->leaveRequests()
+            ->where('leave_type_id', $leaveTypeId)
+            ->where('status', 'approved')
+            ->whereYear('start_date', $year)
+            ->sum('duration_days');
+            
+        return $allocated - $taken;
+    }
+
+    /**
+     * Get summary of all leave types balance
+     */
+    public function getLeaveSummary($year = null)
+    {
+        $year = $year ?? date('Y');
+        $leaveTypes = LeaveType::all();
+        $summary = [];
+
+        foreach ($leaveTypes as $type) {
+            $allocated = $this->leaveAllocations()
+                ->where('leave_type_id', $type->id)
+                ->where('year', $year)
+                ->sum('allocated_days');
+
+            $taken = $this->leaveRequests()
+                ->where('leave_type_id', $type->id)
+                ->where('status', 'approved')
+                ->whereYear('start_date', $year)
+                ->sum('duration_days');
+
+            $summary[] = [
+                'type' => $type->name,
+                'id' => $type->id,
+                'allocated' => $allocated,
+                'taken' => $taken,
+                'balance' => $allocated - $taken
+            ];
+        }
+
+        return $summary;
     }
 
     public function setDateAttribute($value)

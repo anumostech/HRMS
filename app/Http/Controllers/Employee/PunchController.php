@@ -64,7 +64,7 @@ class PunchController extends Controller
 
         // Save Task Report
         TaskReport::create([
-            'employee_id' => $employee->employee_id,
+            'employee_id' => $employee->id,
             'date' => $today,
             'tasks_completed' => $request->tasks_completed,
             'plan_tomorrow' => $request->plan_tomorrow,

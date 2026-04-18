@@ -267,6 +267,103 @@
         .password-toggle-icon:hover {
             color: var(--primary);
         }
+
+        /* ── Modern Datepicker ── */
+        .datepicker-dropdown {
+            padding: 15px !important;
+            border: 0 !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+            border-radius: 16px !important;
+            background: #fff !important;
+            margin-top: 5px !important;
+        }
+
+        .datepicker table {
+            width: 100%;
+        }
+
+        .datepicker table tr td, 
+        .datepicker table tr th {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px !important;
+            border: none;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .datepicker table tr th {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .datepicker table tr th.prev, 
+        .datepicker table tr th.next,
+        .datepicker table tr th.datepicker-switch {
+            background: transparent !important;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .datepicker table tr th.prev:hover, 
+        .datepicker table tr th.next:hover {
+            background: #f3f4f6 !important;
+        }
+
+        .datepicker table tr th.dow {
+            color: #059669 !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            padding-bottom: 12px;
+        }
+
+        .datepicker table tr td.day {
+            color: #4b5563;
+        }
+
+        .datepicker table tr td.day:hover {
+            background: #ecfdf5 !important;
+            color: #059669 !important;
+            cursor: pointer;
+        }
+
+        .datepicker table tr td.old, 
+        .datepicker table tr td.new {
+            color: #d1d5db !important;
+        }
+
+        .datepicker table tr td.active, 
+        .datepicker table tr td.active:hover {
+            background: #059669 !important;
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
+        }
+
+        .datepicker table tr td.today {
+            background: #fef3c7 !important;
+            color: #d97706 !important;
+            position: relative;
+        }
+
+        .datepicker table tr td.today:after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #d97706;
+            border-radius: 50%;
+        }
+
+        .datepicker .datepicker-switch:hover {
+            background: #f3f4f6 !important;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link href="{{ asset('assets/css/plugins.css') }}" rel="stylesheet">
@@ -387,6 +484,10 @@
         $('.datepicker').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,
+            templates: {
+                leftArrow: '<i class="fe fe-chevron-left"></i>',
+                rightArrow: '<i class="fe fe-chevron-right"></i>'
+            }
         });
     </script>
     <script>

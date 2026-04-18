@@ -148,28 +148,47 @@
                         <i class="fe fe-pocket text-indigo fs-4"></i>
                     </div>
                     <div>
-                        <h5 class="mb-0 fw-bold">Leave Balance</h5>
-                        <p class="text-muted small mb-0">Current allocation</p>
+                        <h5 class="mb-0 fw-bold">Leave Balances</h5>
+                        <p class="text-muted small mb-0">For {{ date('Y') }}</p>
                     </div>
                 </div>
 
-                <div class="text-center py-4 bg-light rounded-4 mb-4">
-                    <h1 class="display-4 fw-bold text-indigo mb-0">{{ (int)$remainingBalance }}</h1>
-                    <p class="text-muted text-uppercase small fw-bold mt-1">Days Remaining</p>
+                @php $totalAllocated = 0; $totalTaken = 0; @endphp
+                <div class="leave-balances-list mb-4">
+                    @foreach($leaveSummary as $item)
+                        @php 
+                            $totalAllocated += $item['allocated'];
+                            $totalTaken += $item['taken'];
+                        @endphp
+                        <div class="balance-item p-2 border-bottom {{ $item['allocated'] == 0 ? 'opacity-50' : '' }}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">{{ $item['type'] }}</span>
+                                <span class="badge bg-success-transparent text-success">{{ $item['balance'] }} Bal</span>
+                            </div>
+                            <div class="progress progress-xs mt-2" style="height: 4px;">
+                                <div class="progress-bar bg-primary" role="progressbar" 
+                                     style="width: {{ $item['allocated'] > 0 ? ($item['taken'] / $item['allocated'] * 100) : 0 }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-muted">{{ $item['taken'] }} taken</small>
+                                <small class="text-muted">{{ $item['allocated'] }} allocated</small>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
 
                 <div id="balance-warning" class="alert alert-soft-danger py-2 border-0 small" style="display:none;">
-                    <i class="fe fe-alert-triangle me-1"></i> Requested days exceed your remaining balance.
+                    <i class="fe fe-alert-triangle me-1"></i> Requested days exceed your remaining balance for this type.
                 </div>
 
-                <div class="mt-auto">
+                <div class="mt-auto pt-3 border-top">
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Allocated</span>
-                        <span class="fw-bold text-dark">{{ auth('employee')->user()->total_leaves_allocated }} Days</span>
+                        <span class="text-muted">Total Allocated</span>
+                        <span class="fw-bold text-dark">{{ $totalAllocated }} Days</span>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <span class="text-muted">Taken / Pending</span>
-                        <span class="fw-bold text-dark">{{ auth('employee')->user()->total_leaves_allocated - $remainingBalance }} Days</span>
+                        <span class="text-muted">Total Taken</span>
+                        <span class="fw-bold text-dark">{{ $totalTaken }} Days</span>
                     </div>
                 </div>
             </div>
@@ -180,6 +199,50 @@
         .alert-soft-danger { background-color: rgba(239, 68, 68, 0.1); color: #b91c1c; }
         .bg-soft-indigo { background-color: rgba(99, 102, 241, 0.1); color: #6366f1; }
         .text-indigo { color: #6366f1; }
+        .bg-success-transparent { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+
+        .date-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .datepicker:focus + .date-icon {
+            color: #059669;
+        }
+
+        .form-control:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .emp-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background-color: #059669;
+            border-color: #059669;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #047857;
+            border-color: #047857;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(5, 150, 105, 0.2);
+        }
+        
+        .balance-item:last-child { border-bottom: none !important; }
     </style>
 
     <script>
@@ -192,10 +255,16 @@
             const startDate = document.getElementById('start_date');
             const endDate = document.getElementById('end_date');
             const durationDays = document.getElementById('duration_days');
+            
+            // Map of leave type balances
+            const balances = {
+                @foreach($leaveSummary as $item)
+                    "{{ $item['id'] }}": {{ $item['balance'] }},
+                @endforeach
+            };
 
             function toggleFields() {
                 const selectedValue = leaveTypeSelect.value;
-                // Find selected option text
                 const selectedOption = leaveTypeSelect.options[leaveTypeSelect.selectedIndex];
                 const leaveTypeName = selectedOption ? selectedOption.text.trim().toLowerCase() : '';
 
@@ -212,9 +281,10 @@
                     claimSalarySection.style.display = 'none';
                     documentInput.required = false;
                 }
+                
+                calculateDays();
             }
 
-            const currentBalance = {{ (int)$remainingBalance }};
             const balanceWarning = document.getElementById('balance-warning');
             const submitBtn = document.querySelector('button[type="submit"]');
 
@@ -228,6 +298,9 @@
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
                         durationDays.value = diffDays;
                         
+                        const selectedTypeId = leaveTypeSelect.value;
+                        const currentBalance = selectedTypeId ? (balances[selectedTypeId] || 0) : 0;
+                        
                         if (currentBalance < diffDays) {
                             balanceWarning.style.display = 'block';
                             submitBtn.disabled = true;
@@ -240,6 +313,8 @@
                         balanceWarning.style.display = 'none';
                         submitBtn.disabled = true;
                     }
+                } else {
+                    submitBtn.disabled = !leaveTypeSelect.value || !startDate.value || !endDate.value;
                 }
             }
 

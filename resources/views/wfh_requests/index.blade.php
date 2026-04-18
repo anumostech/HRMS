@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'WFH Requests')
+
 @section('content')
 <div class="row w-100">
     <div class="col-lg-12 mx-auto">
@@ -18,6 +20,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Employee</th>
+                                <th>Employee ID</th>
                                 <th>Reason</th>
                                 <th>Notes</th>
                                 <th>Status</th>
@@ -30,8 +33,10 @@
                                 <td class="fw-bold">{{ \Carbon\Carbon::parse($req->date)->format('d M Y') }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="fw-bold">{{ $req->employee->name }}</div>
+                                        <div class="fw-bold">{{ $req->employee->first_name }} {{ $req->employee->last_name }}</div>
                                     </div>
+                                </td>
+                                <td>
                                     <div class="small text-muted">{{ $req->employee->employee_id }}</div>
                                 </td>
                                 <td>{{ \Illuminate\Support\Str::limit($req->reason, 30) }}</td>

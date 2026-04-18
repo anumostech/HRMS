@@ -27,8 +27,8 @@
 @endsection
 
 @section('content')
-    <div class="page-header">
-        <h1 class="page-title">Add Employee</h1>
+    <div class="page-header" style="display: inline;">
+        <h1 class="page-title mb-2">Add Employee</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('employees.index') }}">Employees</a></li>
@@ -168,7 +168,7 @@
         function validateCurrentStep() {
             let stepEl = document.getElementById('step-' + currentStep);
             if (!stepEl) return true;
-            
+
             let inputs = stepEl.querySelectorAll('input, select, textarea');
             for (let i = 0; i < inputs.length; i++) {
                 if (!inputs[i].checkValidity()) {
@@ -213,28 +213,28 @@
     <script>
         $(document).on('click', '.addSpecialDay', function () {
             let html = `
-                <div class="row special-day-row mb-2">
+                    <div class="row special-day-row mb-2">
 
-                    <div class="col-md-5">
-                        <input type="text" name="special_days_name[]" class="form-control" placeholder="Special Day Name">
-                    </div>
+                        <div class="col-md-5">
+                            <input type="text" name="special_days_name[]" class="form-control" placeholder="Special Day Name">
+                        </div>
 
-                    <div class="col-md-5">
-                        <input type="text" name="special_days_date[]" class="form-control datepicker" placeholder="Select Date">
-                        <span class="date-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h1V.5a.5.5 0 0 1 .5-.5zM2 5v9h12V5H2z" />
-                            </svg>
-                        </span>
-                    </div>
+                        <div class="col-md-5">
+                            <input type="text" name="special_days_date[]" class="form-control datepicker" placeholder="Select Date">
+                            <span class="date-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h1V.5a.5.5 0 0 1 .5-.5zM2 5v9h12V5H2z" />
+                                </svg>
+                            </span>
+                        </div>
 
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-danger removeSpecialDay">
-                            -
-                        </button>
-                    </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger removeSpecialDay">
+                                -
+                            </button>
+                        </div>
 
-                </div>`;
+                    </div>`;
 
             $('#specialDaysWrapper').append(html);
 
@@ -322,8 +322,8 @@
                 success: function (response) {
 
                     let newOption = `<option value="${response.company.id}">
-                                    ${response.company.company_name}
-                                 </option>`;
+                                        ${response.company.company_name}
+                                     </option>`;
 
                     $('#addCompanyOption').before(newOption);
 
@@ -375,8 +375,8 @@
                 success: function (response) {
 
                     let newOption = `<option value="${response.department.id}">
-                                    ${response.department.name}
-                                 </option>`;
+                                        ${response.department.name}
+                                     </option>`;
 
                     $('#addDepartmentOption').before(newOption);
 
@@ -428,8 +428,8 @@
                 success: function (response) {
 
                     let newOption = `<option value="${response.designation.id}">
-                                    ${response.designation.name}
-                                 </option>`;
+                                        ${response.designation.name}
+                                     </option>`;
 
                     $('#addDesignationOption').before(newOption);
 
@@ -501,27 +501,27 @@
         });
     </script>
     <script>
-        $('#organizationSelect').on('change', function() {
+        $('#organizationSelect').on('change', function () {
             let organizationId = $(this).val();
             let companySelect = $('#companySelect');
             let addCompanyOption = $('#addCompanyOption');
             let currentCompanyId = "{{ old('company_id', $employee->company_id ?? '') }}";
-            
+
             companySelect.find('option').not('[value=""]').not('#addCompanyOption').remove();
-            
+
             if (organizationId) {
                 $.ajax({
                     url: '/companies/by-organization/' + organizationId,
                     type: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         let hasSelected = false;
-                        response.forEach(function(company) {
+                        response.forEach(function (company) {
                             let isSelected = (currentCompanyId == company.id) ? 'selected' : '';
-                            if(isSelected) hasSelected = true;
+                            if (isSelected) hasSelected = true;
                             let option = `<option value="${company.id}" ${isSelected}>${company.company_name}</option>`;
                             addCompanyOption.before(option);
                         });
-                        if(!hasSelected && companySelect.val() !== '__new__') {
+                        if (!hasSelected && companySelect.val() !== '__new__') {
                             companySelect.val('');
                         }
                     }
@@ -529,7 +529,7 @@
             }
         });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             if ($('#organizationSelect').val()) {
                 $('#organizationSelect').trigger('change');
             }

@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->date('dob')->nullable();
             $table->date('joining_date')->nullable();
             $table->string('gender')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('marital_status')->nullable();
             $table->text('special_days')->nullable();
 
             // Passport Details

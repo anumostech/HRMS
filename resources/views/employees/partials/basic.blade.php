@@ -121,15 +121,7 @@
         </div>
     </div>
 
-    <!-- Leave Allocation -->
-    <div class="col-md-3 mb-3">
-        <label class="form-label">Leave Allocation (Days)</label>
-        <input type="number" class="form-control @error('total_leaves_allocated') is-invalid @enderror"
-            name="total_leaves_allocated"
-            value="{{ old('total_leaves_allocated', $employee->total_leaves_allocated ?? 0) }}"
-            placeholder="Enter total days">
-        @error('total_leaves_allocated') <div class="invalid-feedback">{{ $message }}</div> @enderror
-    </div>
+
 
     <!-- Special Days -->
     <div class="col-md-12 mb-3">

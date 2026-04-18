@@ -7,13 +7,47 @@
     <link href="{{ asset('assets/css/dashboard_modern.css') }}" rel="stylesheet">
 
     <div class="emp-card">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <div class="emp-card-header">
                 <span></span> My Leaves
             </div>
             <a href="{{ route('employee.leaves.create') }}" class="btn btn-primary">
                 <i class="fe fe-plus"></i> Request Leave
             </a>
+        </div>
+
+        <!-- Leave Summary Cards -->
+        <div class="row mb-5">
+            @foreach($leaveSummary as $item)
+            @if($item['allocated'] > 0 || $item['taken'] > 0)
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-none border h-100 mb-0" style="border-radius: 12px; overflow: hidden;">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-primary-transparent text-primary rounded-circle p-2 me-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fe fe-calendar fs-14"></i>
+                            </div>
+                            <h6 class="mb-0 fw-bold">{{ $item['type'] }}</h6>
+                        </div>
+                        <div class="row text-center mt-3">
+                            <div class="col-4 border-end">
+                                <small class="text-muted d-block">Allocated</small>
+                                <span class="fw-bold">{{ $item['allocated'] }}</span>
+                            </div>
+                            <div class="col-4 border-end">
+                                <small class="text-muted d-block">Taken</small>
+                                <span class="fw-bold text-danger">{{ $item['taken'] }}</span>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Balance</small>
+                                <span class="fw-bold text-success">{{ $item['balance'] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            @endforeach
         </div>
 
         @if($leaveRequests->isEmpty())

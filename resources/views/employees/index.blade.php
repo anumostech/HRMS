@@ -3,8 +3,8 @@
 @section('title', 'Employee Listing')
 
 @section('content')
-<div class="page-header">
-    <h1 class="page-title">Employees</h1>
+<div class="page-header" style="display:inline;">
+    <h1 class="page-title mb-2">Employees</h1>
     <div>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="javascript:void(0)">Employees</a></li>
@@ -41,13 +41,13 @@
                                 <th class="wd-15p border-bottom-0">Designation</th>
                                 <th class="wd-20p border-bottom-0">Department</th>
                                 <th class="wd-15p border-bottom-0">Company</th>
-                                <th class="wd-10p border-bottom-0">Leave Allocation</th>
+                                <th class="wd-10p border-bottom-0">Leave Balance</th>
                                 <th class="wd-10p border-bottom-0">Status</th>
                                 <th class="wd-25p border-bottom-0">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($employees as $key => $employee)
+                            @foreach($employees as $key => $employee)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $employee->first_name.' '.$employee?->last_name }}</td>
@@ -55,7 +55,9 @@
                                 <td>{{ $employee->department->name ?? '' }}</td>
                                 <td>{{ $employee->company->company_name ?? '' }}</td>
                                 <td>
-                                    <span class="badge bg-info-light text-info rounded-pill px-3">{{ $employee->total_leaves_allocated ?? 0 }} Days</span>
+                                    <a href="{{ route('leave-allocations.edit', $employee->id) }}" class="badge bg-info-light text-info rounded-pill px-3 py-2" title="View/Manage Balance">
+                                        <i class="fe fe-calendar me-1"></i>View Balance
+                                    </a>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -81,27 +83,23 @@
                                         <!-- <a href="#" class="btn btn-sm btn-info" title="View Details">
                                             <i class="fe fe-eye"></i>
                                         </a> -->
-                                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-sm btn-info" title="View Details">
+                                        <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-sm btn-outline-info" title="View Details">
                                             <i class="fe fe-eye"></i>
                                         </a>
-                                        <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                        <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="fe fe-edit"></i>
                                         </a>
                                         <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" onsubmit="confirmDelete(event)">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Deactivate">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Deactivate">
                                                 <i class="fe fe-trash"></i>
                                             </button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="7" class="text-center">No employees found.</td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

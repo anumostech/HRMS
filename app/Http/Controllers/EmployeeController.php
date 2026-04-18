@@ -34,7 +34,7 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $companies = Company::where('organization_id','1')->get();
+        $companies = Company::where('organization_id', '1')->get();
         $departments = Department::all();
         $designations = Designation::orderBy('id', 'desc')->get();
         $organizations = Organization::all();

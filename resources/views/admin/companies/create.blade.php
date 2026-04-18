@@ -99,7 +99,7 @@
         function validateCurrentStep() {
             let stepEl = document.getElementById('step-' + currentStep);
             if (!stepEl) return true;
-            
+
             let inputs = stepEl.querySelectorAll('input, select, textarea');
             for (let i = 0; i < inputs.length; i++) {
                 if (!inputs[i].checkValidity()) {

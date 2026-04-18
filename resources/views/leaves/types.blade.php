@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Leave Types Management')
+@section('title', 'Leave Types')
 
 @section('content')
 <div class="page-header">
@@ -35,16 +35,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($leaveTypes as $type)
+                            @foreach($leaveTypes as $type)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $type->name }}</td>
                                 <td>
-                                    <div class="form-check form-switch p-0" style="width: fit-content;">
+                                    <div class="form-check form-switch p-0 d-flex align-items-center" style="width: fit-content;">
                                         <input class="form-check-input status-toggle" type="checkbox" 
                                             data-id="{{ $type->id }}" 
                                             {{ $type->status ? 'checked' : '' }}
-                                            style="margin: 0; cursor: pointer;">
+                                            style="margin: 0; cursor: pointer; height: 20px; width: 40px; position: relative;">
+                                        <span class="ms-2 small text-muted">{{ $type->status ? 'Active' : 'Inactive' }}</span>
                                     </div>
                                 </td>
                                 <td>
@@ -64,11 +65,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="text-center">No leave types found.</td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

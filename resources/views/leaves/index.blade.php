@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Leave Management')
+@section('title', 'Leaves')
 
 @section('content')
-    <div class="page-header">
-        <h1 class="page-title">Leave Management</h1>
+    <div class="page-header" style="display: inline;">
+        <h1 class="page-title mb-2">Leaves</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Leaves</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Management</li>
+                <li class="breadcrumb-item active" aria-current="page">Listing</li>
             </ol>
         </div>
     </div>
@@ -18,9 +18,14 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="card-title">Leave Requests</h3>
-                    <a href="{{ route('leaves.types.index') }}" class="btn btn-primary btn-sm">
-                        <i class="fe fe-settings me-1"></i>Manage Leave Types
-                    </a>
+                    <div class="btn-list">
+                        <a href="{{ route('leave-allocations.index') }}" class="btn btn-info btn-sm">
+                            <i class="fe fe-users me-1"></i>Manage Leave Allocations
+                        </a>
+                        <a href="{{ route('leaves.types.index') }}" class="btn btn-primary btn-sm">
+                            <i class="fe fe-settings me-1"></i>Manage Leave Types
+                        </a>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -54,10 +59,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($leaveRequests as $leave)
+                                @foreach($leaveRequests as $leave)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $leave->employee->name }}</td>
+                                        <td>{{ $leave->employee->first_name }} {{ $leave->employee->last_name }}</td>
                                         <td>{{ $leave->leaveType->name }}</td>
                                         <td>{{ $leave->start_date->format('d M, Y') }}</td>
                                         <td>{{ $leave->end_date->format('d M, Y') }}</td>
@@ -110,11 +115,7 @@
                                             @endif
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="11" class="text-center">No leave requests found.</td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Task Reports')
+
 @section('content')
 <div class="row w-100">
     <div class="col-lg-12 mx-auto">
@@ -15,6 +17,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Employee</th>
+                                <th>Employee ID</th>
                                 <th>Tasks Completed</th>
                                 <th>Plan for Tomorrow</th>
                                 <th>Remarks</th>
@@ -25,7 +28,8 @@
                             <tr>
                                 <td class="fw-bold whitespace-nowrap">{{ \Carbon\Carbon::parse($report->date)->format('d M Y') }}</td>
                                 <td>
-                                    <div class="fw-bold">{{ $report->employee->name }}</div>
+                                    <div class="fw-bold">{{ $report->employee->first_name }} {{ $report->employee->last_name }}</div></td>
+                                <td>
                                     <div class="small text-muted">{{ $report->employee->employee_id }}</div>
                                 </td>
                                 <td>{{ $report->tasks_completed }}</td>

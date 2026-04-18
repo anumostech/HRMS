@@ -46,6 +46,35 @@
 
         <div class="card">
             <div class="card-header">
+                <h3 class="card-title">Leave Balances ({{ date('Y') }})</h3>
+                <div class="card-options">
+                    <a href="{{ route('leave-allocations.edit', $employee->id) }}" class="btn btn-sm btn-outline-primary">Manage</a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    @foreach($employee->getLeaveSummary() as $item)
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold text-dark">{{ $item['type'] }}</span>
+                            <span class="badge bg-success-transparent text-success">{{ $item['balance'] }} Bal</span>
+                        </div>
+                        <div class="progress progress-xs" style="height: 4px;">
+                            <div class="progress-bar bg-primary" role="progressbar" 
+                                 style="width: {{ $item['allocated'] > 0 ? ($item['taken'] / $item['allocated'] * 100) : 0 }}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted text-extra-small">{{ $item['taken'] }} taken</small>
+                            <small class="text-muted text-extra-small">{{ $item['allocated'] }} allocated</small>
+                        </div>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
                 <h3 class="card-title">Contact Details</h3>
             </div>
             <div class="card-body">

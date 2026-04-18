@@ -6,13 +6,13 @@
 <div class="row mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="page-title">Company Management</h1>
+            <h1 class="page-title mb-2">Companies</h1>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Companies</a></li>
                 @if($organization_id)
                 <li class="breadcrumb-item"><a href="{{ route('organizations.index') }}">Organizations</a></li>
                 @endif
-                <li class="breadcrumb-item active" aria-current="page">Companies</li>
+                <li class="breadcrumb-item active" aria-current="page">Listing</li>
             </ol>
         </div>
         <a href="{{ route('companies.create', ['organization_id' => $organization_id]) }}" class="btn btn-primary">
@@ -23,16 +23,16 @@
         <div class="card shadow-sm border-0">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover text-nowrap" id="basic-datatable">
+                    <table class="table table-modern text-nowrap" id="basic-datatable">
                         <thead>
                             <tr>
-                                <th>Logo</th>
-                                <th>Company Name</th>
-                                <th>Organization</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th>Created At</th>
-                                <th class="text-end">Actions</th>
+                                <th class="wd-15p border-bottom-0">Logo</th>
+                                <th class="wd-15p border-bottom-0">Company Name</th>
+                                <th class="wd-15p border-bottom-0">Organization</th>
+                                <th class="wd-15p border-bottom-0">Phone</th>
+                                <th class="wd-15p border-bottom-0">Email</th>
+                                <th class="wd-15p border-bottom-0">Created At</th>
+                                <th class="wd-15p border-bottom-0">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,7 +57,7 @@
                                 <td>{{ $company->email ?? 'N/A' }}</td>
                                 <td>{{ $company->created_at->format('d M, Y') }}</td>
                                 <td class="text-end">
-                                    <div class="d-flex justify-content-end gap-2">
+                                    <div class="d-flex gap-2">
                                         <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-sm btn-outline-info">
                                             <i class="fe fe-edit-2"></i>
                                         </a>

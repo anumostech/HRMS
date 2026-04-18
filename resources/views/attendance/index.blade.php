@@ -4,23 +4,12 @@
 
 @section('styles')
 <link href="{{ asset('assets/css/dashboard_modern.css') }}" rel="stylesheet">
-<style>
-    .breadcrumb-item.active {
-        color: #6366f1;
-        font-weight: 600;
-    }
-
-    .page-title {
-        font-weight: 700;
-        color: #1e293b;
-    }
-</style>
 @endsection
 
 @section('content')
 <!-- PAGE-HEADER -->
-<div class="page-header">
-    <h1 class="page-title">Attendance</h1>
+<div class="page-header" style="display: inline;">
+    <h1 class="page-title mb-2">Attendance</h1>
     <div>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
@@ -37,7 +26,7 @@
             <div class="card overflow-hidden stat-card">
                 <div class="card-body">
                     <div class="text-center">
-                        <h6 class="mb-1">
+                        <h6 class="mb-1 text-black">
                             <span class="me-1">
                                 <i class="fe fe-users fs-16 text-primary"></i>
                             </span>Total Employees
@@ -53,7 +42,7 @@
             <div class="card overflow-hidden stat-card">
                 <div class="card-body">
                     <div class="text-center">
-                        <h6 class="mb-1">
+                        <h6 class="mb-1 text-black">
                             <span class="me-1">
                                 <i class="fe fe-log-in fs-16 text-success"></i>
                             </span>Punched In Today
@@ -69,7 +58,7 @@
             <div class="card overflow-hidden stat-card">
                 <div class="card-body">
                     <div class="text-center">
-                        <h6 class="mb-1">
+                        <h6 class="mb-1 text-black">
                             <span class="me-1">
                                 <i class="fe fe-clock text-warning fs-16"></i>
                             </span>Late Today
@@ -85,7 +74,7 @@
             <div class="card overflow-hidden stat-card">
                 <div class="card-body">
                     <div class="text-center">
-                        <h6 class="mb-1">
+                        <h6 class="mb-1 text-black">
                             <span class="me-1">
                                 <i class="fe fe-x-circle text-danger fs-16"></i>
                             </span>
@@ -102,7 +91,7 @@
             <div class="card overflow-hidden stat-card">
                 <div class="card-body">
                     <div class="text-center">
-                        <h6 class="mb-1">
+                        <h6 class="mb-1 text-black">
                             <span class="me-1">
                                 <i class="fe fe-log-out text-danger fs-16"></i>
                             </span>
@@ -174,7 +163,7 @@
                 </form>
 
                 <div class="table-responsive">
-                    <table class="table table-modern text-nowrap">
+                    <table class="table table-modern text-nowrap" id="basic-datatable">
                         <thead>
                             <tr>
                                 <th>Sl.No.</th>
@@ -186,7 +175,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($attendance as $key => $record)
+                            @foreach($attendance as $key => $record)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $record->company->company_name }}</td>
@@ -212,11 +201,7 @@
                                     @endif
                                 </td>
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">No attendance records found with these filters.</td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

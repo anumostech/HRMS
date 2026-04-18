@@ -157,8 +157,8 @@
                                 <tr>
                                     <td class="ps-4">
                                         <div class="fw-bold text-dark">
-                                            @if($log->date)
-                                                {{ \Carbon\Carbon::parse($log->date)->format('d-m-Y') }}
+                                            @if($log->log_date)
+                                                {{ \Carbon\Carbon::parse($log->log_date)->format('d-m-Y') }}
                                             @else
                                                 <span class="text-muted">No Date</span>
                                             @endif
