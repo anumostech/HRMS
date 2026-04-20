@@ -4,11 +4,11 @@
 
 @section('content')
 <!-- PAGE-HEADER -->
-<div class="page-header">
-    <h1 class="page-title">Upload Attendance</h1>
+<div class="page-header" style="display:inline">
+    <h1 class="page-title mb-2">Upload Attendance Logs</h1>
     <div>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
             <li class="breadcrumb-item"><a href="{{ route('attendance.index') }}">Attendance</a></li>
             <li class="breadcrumb-item active" aria-current="page">Upload</li>
         </ol>
@@ -35,17 +35,6 @@
 
                 <form id="attendanceUploadForm" enctype="multipart/form-data">
                     @csrf
-                    <!-- <div class="form-group mb-3">
-                        <label for="company_id" class="form-label">Select Company</label>
-                        <div class="select-wrapper">
-                            <select name="company_id" id="company_id" class="form-control" required>
-                                <option value="">Select Company</option>
-                                @foreach($companies as $company)
-                                <option value="{{ $company->id }}">{{ $company->company_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div> -->
 
                     <div class="form-group mb-4">
                         <label for="file" class="form-label">Attendance File</label>

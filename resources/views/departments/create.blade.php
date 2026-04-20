@@ -20,10 +20,15 @@
                 <form action="{{ route('departments.store') }}" method="POST">
                     @csrf
                     <div class="mb-4">
-                        <label class="form-label fw-bold">Department Name <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="Enter department name" required>
+                        <label class="form-label fw-bold">Department Name(s) <span class="text-danger">*</span></label>
+                        <div id="departmentInputsContainer">
+                            <div class="d-flex mb-2 department-input-row">
+                                <input type="text" name="name[]" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="Enter department name" required>
+                                <button type="button" class="btn btn-success ms-2 addDepartmentInput">+</button>
+                            </div>
+                        </div>
                         @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -36,4 +41,21 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).on('click', '.addDepartmentInput', function() {
+        let html = `
+        <div class="d-flex mb-2 department-input-row">
+            <input type="text" name="name[]" class="form-control" placeholder="Enter department name" required>
+            <button type="button" class="btn btn-danger ms-2 removeDepartmentInput">-</button>
+        </div>`;
+        $('#departmentInputsContainer').append(html);
+    });
+
+    $(document).on('click', '.removeDepartmentInput', function() {
+        $(this).closest('.department-input-row').remove();
+    });
+</script>
 @endsection

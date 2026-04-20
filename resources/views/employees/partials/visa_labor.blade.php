@@ -11,7 +11,7 @@
                         <option value="">Select Type of Visa</option>
                         <option value="company_visa" {{ old('visa_type', $employee->visa_type ?? '') == 'company_visa' ? 'selected' : '' }}>Company Visa</option>
                         <option value="family_visa" {{ old('visa_type', $employee->visa_type ?? '') == 'family_visa' ? 'selected' : '' }}>Family Visa</option>
-                        <option value="other_company_visa" {{ old('visa_type', $employee->visa_type ?? '') == 'other_company_visa' ? 'selected' : '' }}>Other Company Visa</option>
+                        <option value="other_company_visa" {{ old('visa_type', $employee->visa_type ?? '') == 'other_visa' ? 'selected' : '' }}>Other Visa</option>
                     </select>
                 </div>
                 @error('visa_type') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
@@ -36,7 +36,7 @@
                         class="form-control datepicker pe-5 @error('visa_issued_date') is-invalid @enderror"
                         name="visa_issued_date"
                         value="{{ old('visa_issued_date', isset($employee->visa_issued_date) ? \Carbon\Carbon::parse($employee->visa_issued_date)->format('d-m-Y') : '') }}"
-                        placeholder="Select visa issued date">
+                        placeholder="Visa issued date">
                     <span class="date-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h1V.5a.5.5 0 0 1 .5-.5zM2 5v9h12V5H2z" />
@@ -53,7 +53,7 @@
                         class="form-control datepicker pe-5 @error('visa_expiry_date') is-invalid @enderror"
                         name="visa_expiry_date"
                         value="{{ old('visa_expiry_date', isset($employee->visa_expiry_date) ? \Carbon\Carbon::parse($employee->visa_expiry_date)->format('d-m-Y') : '') }}"
-                        placeholder="Select visa expiry date">
+                        placeholder="Visa expiry date">
                     <span class="date-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h1V.5a.5.5 0 0 1 .5-.5zM2 5v9h12V5H2z" />
@@ -102,7 +102,7 @@
                         class="form-control datepicker pe-5 @error('labor_issued_date') is-invalid @enderror"
                         name="labor_issued_date"
                         value="{{ old('labor_issued_date', isset($employee->labor_issued_date) ? \Carbon\Carbon::parse($employee->labor_issued_date)->format('d-m-Y') : '') }}"
-                        placeholder="Select labor issued date">
+                        placeholder="Labor issued date">
                     <span class="date-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h1V.5a.5.5 0 0 1 .5-.5zM2 5v9h12V5H2z" />
@@ -118,7 +118,7 @@
                         class="form-control datepicker pe-5 @error('labor_expiry_date') is-invalid @enderror"
                         name="labor_expiry_date"
                         value="{{ old('labor_expiry_date', isset($employee->labor_expiry_date) ? \Carbon\Carbon::parse($employee->labor_expiry_date)->format('d-m-Y') : '') }}"
-                        placeholder="Select labor expiry date">
+                        placeholder="Labor expiry date">
                     <span class="date-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h1V.5a.5.5 0 0 1 .5-.5zM2 5v9h12V5H2z" />

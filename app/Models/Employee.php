@@ -65,6 +65,8 @@ class Employee extends Authenticatable
         'dob',
         'joining_date',
         'gender',
+        'marital_status',
+        'nationality',
         'special_days',
         'passport_full_name',
         'passport_number',

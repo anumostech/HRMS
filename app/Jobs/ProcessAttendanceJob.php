@@ -6,6 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\AttendanceUpload;
 use App\Models\AttendanceLog;
+use App\Models\Employee;
 use Carbon\Carbon;
 
 class ProcessAttendanceJob implements ShouldQueue
@@ -16,12 +17,10 @@ class ProcessAttendanceJob implements ShouldQueue
      * Create a new job instance.
      */
     public $uploadId;
-    public $companyId;
 
-    public function __construct($uploadId, $companyId)
+    public function __construct($uploadId)
     {
         $this->uploadId = $uploadId;
-        $this->companyId = $companyId;
     }
 
     /**
@@ -60,11 +59,13 @@ class ProcessAttendanceJob implements ShouldQueue
         while (($line = fgets($handle)) !== false) {
 
             $line = trim($line);
-            if (!$line) continue;
+            if (!$line)
+                continue;
 
             $parts = preg_split('/\s+/', $line);
 
-            if (count($parts) < 3) continue;
+            if (count($parts) < 3)
+                continue;
 
             $userid = $parts[0];
             $timestamp = $parts[1] . ' ' . $parts[2];
@@ -89,6 +90,8 @@ class ProcessAttendanceJob implements ShouldQueue
         fclose($handle);
 
         // Process grouped data
+        $employees = Employee::pluck('company_id', 'employee_id');
+
         foreach ($grouped as $key => $timestamps) {
 
             sort($timestamps);
@@ -98,13 +101,20 @@ class ProcessAttendanceJob implements ShouldQueue
             $punchIn = $timestamps[0];
             $punchOut = count($timestamps) > 1 ? end($timestamps) : null;
 
+            $companyId = $employees[$userid] ?? null;
+
+            if (!$companyId) {
+                \Log::warning("Company not found for user: " . $userid);
+                continue;
+            }
+
             AttendanceLog::updateOrCreate(
                 [
                     'userid' => $userid,
                     'log_date' => $date,
-                    'company_id' => $this->companyId
                 ],
                 [
+                    'company_id' => $companyId,
                     'punch_in' => $punchIn,
                     'punch_out' => $punchOut
                 ]

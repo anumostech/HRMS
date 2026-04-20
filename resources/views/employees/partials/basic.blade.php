@@ -121,6 +121,30 @@
         </div>
     </div>
 
+    <div class="col-md-3 mb-3">
+        <label class="form-label">Nationality</label>
+        <input type="text" class="form-control @error('nationality') is-invalid @enderror" name="nationality"
+            value="{{ old('nationality', $employee->nationality ?? '') }}" placeholder="Enter nationality">
+        @error('nationality') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    </div>
+
+    <div class="col-md-3 mb-3">
+        <label class="form-label">Marital Status</label>
+        <div class="select-wrapper">
+            <select class="form-control" name="marital_status">
+                <option value="">Select Marital Status</option>
+                <option value="Single" {{ old('marital_status', $employee->marital_status ?? '') == 'Single' ? 'selected' : '' }}>Single
+                </option>
+                <option value="Married" {{ old('marital_status', $employee->marital_status ?? '') == 'Married' ? 'selected' : '' }}>Married
+                </option>
+                <option value="Divorced" {{ old('marital_status', $employee->marital_status ?? '') == 'Divorced' ? 'selected' : '' }}>Divorced
+                </option>
+                <option value="Widowed" {{ old('marital_status', $employee->marital_status ?? '') == 'Widowed' ? 'selected' : '' }}>Widowed
+                </option>
+            </select>
+        </div>
+    </div>
+
 
 
     <!-- Special Days -->

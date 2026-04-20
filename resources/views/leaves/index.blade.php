@@ -62,8 +62,8 @@
                                 @foreach($leaveRequests as $leave)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $leave->employee->first_name }} {{ $leave->employee->last_name }}</td>
-                                        <td>{{ $leave->leaveType->name }}</td>
+                                        <td>{{ $leave->employee?->first_name }} {{ $leave->employee?->last_name }}</td>
+                                        <td>{{ $leave->leaveType?->name }}</td>
                                         <td>{{ $leave->start_date->format('d M, Y') }}</td>
                                         <td>{{ $leave->end_date->format('d M, Y') }}</td>
                                         <td><span class="badge bg-light text-dark border">{{ $leave->duration_days }}</span>

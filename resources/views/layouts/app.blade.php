@@ -112,7 +112,7 @@
             width: 100%;
         }
 
-        .datepicker table tr td, 
+        .datepicker table tr td,
         .datepicker table tr th {
             width: 38px;
             height: 38px;
@@ -128,7 +128,7 @@
             color: #1f2937;
         }
 
-        .datepicker table tr th.prev, 
+        .datepicker table tr th.prev,
         .datepicker table tr th.next,
         .datepicker table tr th.datepicker-switch {
             background: transparent !important;
@@ -136,7 +136,7 @@
             padding: 5px 0;
         }
 
-        .datepicker table tr th.prev:hover, 
+        .datepicker table tr th.prev:hover,
         .datepicker table tr th.next:hover {
             background: #f3f4f6 !important;
         }
@@ -160,12 +160,12 @@
             cursor: pointer;
         }
 
-        .datepicker table tr td.old, 
+        .datepicker table tr td.old,
         .datepicker table tr td.new {
             color: #d1d5db !important;
         }
 
-        .datepicker table tr td.active, 
+        .datepicker table tr td.active,
         .datepicker table tr td.active:hover {
             background: #059669 !important;
             color: #fff !important;
@@ -652,7 +652,7 @@
             $('.datatable-basic').each(function () {
                 if (!$.fn.DataTable.isDataTable(this)) {
                     $(this).DataTable({
-                        pageLength: 10,
+                        pageLength: 50,
                         language: {
                             search: "",
                             searchPlaceholder: "Search records...",

@@ -5,8 +5,8 @@
 @section('content')
 <div class="row w-100">
     <div class="col-lg-12 mx-auto">
-        <div class="page-header mt-4 mb-4">
-            <h1 class="page-title text-primary"><i class="fe fe-briefcase"></i> {{ $title }}</h1>
+        <div class="page-header" style="display:inline">
+            <h1 class="page-title mb-2">{{ $title }}</h1>
             <div class="ms-auto d-flex align-items-center gap-3">
                 <span class="badge bg-soft-info px-3 py-2 rounded-pill">{{ $subtitle }}</span>
                 <ol class="breadcrumb mb-0">

@@ -22,19 +22,34 @@ class DesignationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required',
             'default_punch_access' => 'boolean'
         ]);
 
-        $designation = Designation::create([
-            'name' => $request->name,
-            'default_punch_access' => $request->has('default_punch_access')
-        ]);
+        $designations = [];
+        $defaultPunch = $request->has('default_punch_access');
+        
+        if (is_array($request->name)) {
+            foreach ($request->name as $name) {
+                if (!empty(trim($name))) {
+                    $designations[] = Designation::create([
+                        'name' => trim($name),
+                        'default_punch_access' => $defaultPunch
+                    ]);
+                }
+            }
+        } else {
+            $designations[] = Designation::create([
+                'name' => trim($request->name),
+                'default_punch_access' => $defaultPunch
+            ]);
+        }
 
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'designation' => $designation
+                'designation' => $designations[0] ?? null,
+                'designations' => $designations
             ]);
         }
 
@@ -49,14 +64,32 @@ class DesignationController extends Controller
     public function update(Request $request, Designation $designation)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required',
             'default_punch_access' => 'boolean'
         ]);
 
-        $designation->update([
-            'name' => $request->name,
-            'default_punch_access' => $request->has('default_punch_access')
-        ]);
+        $defaultPunch = $request->has('default_punch_access');
+
+        if (is_array($request->name)) {
+            $designation->update([
+                'name' => trim($request->name[0]),
+                'default_punch_access' => $defaultPunch
+            ]);
+            
+            for ($i = 1; $i < count($request->name); $i++) {
+                if (!empty(trim($request->name[$i]))) {
+                    Designation::create([
+                        'name' => trim($request->name[$i]),
+                        'default_punch_access' => $defaultPunch
+                    ]);
+                }
+            }
+        } else {
+            $designation->update([
+                'name' => trim($request->name),
+                'default_punch_access' => $defaultPunch
+            ]);
+        }
 
         return redirect()->route('designations.index')->with('success', 'Designation updated successfully.');
     }

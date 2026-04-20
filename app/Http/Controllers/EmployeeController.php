@@ -100,7 +100,7 @@ class EmployeeController extends Controller
 
         Employee::create($data);
 
-        return redirect()->back()->with('success', 'Employee created successfully.');
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
 
     public function show(Employee $employee)
@@ -182,7 +182,7 @@ class EmployeeController extends Controller
 
         $employee->update($data);
 
-        return redirect()->back()->with('success', 'Employee updated successfully.');
+        return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }
 
     public function updateStatus(Request $request, Employee $employee)

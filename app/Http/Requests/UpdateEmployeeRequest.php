@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 use Carbon\Carbon;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateEmployeeRequest extends FormRequest
 {
@@ -66,6 +67,8 @@ class UpdateEmployeeRequest extends FormRequest
 
     public function rules(): array
     {
+        $employee = $this->route('employee');
+        
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
@@ -118,10 +121,33 @@ class UpdateEmployeeRequest extends FormRequest
             'eid_issued_date' => 'nullable|date',
             'eid_expiry_date' => 'nullable|date',
             'dependents' => 'nullable|string|max:255',
-            'company_mobile_number' => 'nullable|string|max:255',
-            'personal_number' => 'nullable|string|max:255',
-            'other_number' => 'nullable|string|max:255',
-            'home_country_number' => 'nullable|string|max:255',
+            'company_mobile_number' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('employees', 'company_mobile_number')->ignore($employee->id)
+            ],
+
+            'personal_number' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('employees', 'personal_number')->ignore($employee->id)
+            ],
+
+            'other_number' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('employees', 'other_number')->ignore($employee->id)
+            ],
+
+            'home_country_number' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('employees', 'home_country_number')->ignore($employee->id)
+            ],
             'company_email' => 'nullable|email|max:255',
             'personal_email' => 'nullable|email|max:255',
             'status' => 'nullable|in:active,inactive',

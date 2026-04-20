@@ -109,12 +109,17 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Department Name</h5>
+                    <h5 class="modal-title">Add Department Name(s)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
-                    <input type="text" id="newDepartmentName" class="form-control" placeholder="Enter department name">
+                    <div id="departmentInputsContainer">
+                        <div class="d-flex mb-2 department-input-row">
+                            <input type="text" name="department_name[]" class="form-control" placeholder="Enter department name">
+                            <button type="button" class="btn btn-success ms-2 addDepartmentInput">+</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -130,12 +135,17 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Designation Name</h5>
+                    <h5 class="modal-title">Add Designation Name(s)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
-                    <input type="text" id="newDesignationName" class="form-control" placeholder="Enter designation name">
+                    <div id="designationInputsContainer">
+                        <div class="d-flex mb-2 designation-input-row">
+                            <input type="text" name="designation_name[]" class="form-control" placeholder="Enter designation name">
+                            <button type="button" class="btn btn-success ms-2 addDesignationInput">+</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -356,12 +366,30 @@
 
         });
 
+        $(document).on('click', '.addDepartmentInput', function() {
+            let html = `
+            <div class="d-flex mb-2 department-input-row">
+                <input type="text" name="department_name[]" class="form-control" placeholder="Enter department name">
+                <button type="button" class="btn btn-danger ms-2 removeDepartmentInput">-</button>
+            </div>`;
+            $('#departmentInputsContainer').append(html);
+        });
+
+        $(document).on('click', '.removeDepartmentInput', function() {
+            $(this).closest('.department-input-row').remove();
+        });
+
         $('#saveDepartmentBtn').click(function () {
 
-            let departmentName = $('#newDepartmentName').val();
+            let departmentNames = [];
+            $('input[name="department_name[]"]').each(function() {
+                if ($(this).val().trim() !== '') {
+                    departmentNames.push($(this).val().trim());
+                }
+            });
 
-            if (!departmentName) {
-                alert("Department name is required");
+            if (departmentNames.length === 0) {
+                alert("At least one department name is required");
                 return;
             }
 
@@ -369,20 +397,30 @@
                 url: "{{ route('departments.store') }}",
                 type: "POST",
                 data: {
-                    name: departmentName,
+                    name: departmentNames,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (response) {
+                    let firstId = null;
+                    if (response.departments) {
+                        response.departments.forEach(function(dept) {
+                            let newOption = `<option value="${dept.id}">${dept.name}</option>`;
+                            $('#addDepartmentOption').before(newOption);
+                            if (!firstId) firstId = dept.id;
+                        });
+                    }
 
-                    let newOption = `<option value="${response.department.id}">
-                                        ${response.department.name}
-                                     </option>`;
+                    if (firstId) {
+                        $('#departmentSelect').val(firstId).trigger('change');
+                    }
 
-                    $('#addDepartmentOption').before(newOption);
-
-                    $('#departmentSelect').val(response.department.id).trigger('change');
-
-                    $('#newDepartmentName').val('');
+                    // Reset form
+                    $('#departmentInputsContainer').html(`
+                        <div class="d-flex mb-2 department-input-row">
+                            <input type="text" name="department_name[]" class="form-control" placeholder="Enter department name">
+                            <button type="button" class="btn btn-success ms-2 addDepartmentInput">+</button>
+                        </div>
+                    `);
 
                     bootstrap.Modal.getInstance(document.getElementById('createDepartmentModal')).hide();
 
@@ -409,12 +447,30 @@
 
         });
 
+        $(document).on('click', '.addDesignationInput', function() {
+            let html = `
+            <div class="d-flex mb-2 designation-input-row">
+                <input type="text" name="designation_name[]" class="form-control" placeholder="Enter designation name">
+                <button type="button" class="btn btn-danger ms-2 removeDesignationInput">-</button>
+            </div>`;
+            $('#designationInputsContainer').append(html);
+        });
+
+        $(document).on('click', '.removeDesignationInput', function() {
+            $(this).closest('.designation-input-row').remove();
+        });
+
         $('#saveDesignationBtn').click(function () {
 
-            let designationName = $('#newDesignationName').val();
+            let designationNames = [];
+            $('input[name="designation_name[]"]').each(function() {
+                if ($(this).val().trim() !== '') {
+                    designationNames.push($(this).val().trim());
+                }
+            });
 
-            if (!designationName) {
-                alert("Designation name is required");
+            if (designationNames.length === 0) {
+                alert("At least one designation name is required");
                 return;
             }
 
@@ -422,20 +478,29 @@
                 url: "{{ route('designations.store') }}",
                 type: "POST",
                 data: {
-                    name: designationName,
+                    name: designationNames,
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (response) {
+                    let firstId = null;
+                    if (response.designations) {
+                        response.designations.forEach(function(desig) {
+                            let newOption = `<option value="${desig.id}">${desig.name}</option>`;
+                            $('#addDesignationOption').before(newOption);
+                            if (!firstId) firstId = desig.id;
+                        });
+                    }
 
-                    let newOption = `<option value="${response.designation.id}">
-                                        ${response.designation.name}
-                                     </option>`;
+                    if (firstId) {
+                        $('#designationSelect').val(firstId).trigger('change');
+                    }
 
-                    $('#addDesignationOption').before(newOption);
-
-                    $('#designationSelect').val(response.designation.id).trigger('change');
-
-                    $('#newDesignationName').val('');
+                    $('#designationInputsContainer').html(`
+                        <div class="d-flex mb-2 designation-input-row">
+                            <input type="text" name="designation_name[]" class="form-control" placeholder="Enter designation name">
+                            <button type="button" class="btn btn-success ms-2 addDesignationInput">+</button>
+                        </div>
+                    `);
 
                     bootstrap.Modal.getInstance(document.getElementById('createDesignationModal')).hide();
 

@@ -633,7 +633,7 @@ class AttendanceController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:dat,csv,txt|max:2048',
-            'company_id' => 'required|exists:companies,id'
+            // 'company_id' => 'required|exists:companies,id'
         ]);
 
         try {
@@ -642,12 +642,15 @@ class AttendanceController extends Controller
 
             $upload = AttendanceUpload::create([
                 'file_path' => $path,
-                'company_id' => $request->company_id,
+                // 'company_id' => $request->company_id,
                 'status' => 'pending',
                 'progress' => 0
             ]);
 
-            ProcessAttendanceJob::dispatch($upload->id, $request->company_id);
+            ProcessAttendanceJob::dispatch($upload->id);
+
+            // $this->notifyHRAboutLatecomers($request->company_id);
+            // $this->notifyHRAboutAbsentees($request->company_id);
 
             return response()->json([
                 'success' => true,

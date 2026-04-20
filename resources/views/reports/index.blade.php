@@ -5,10 +5,13 @@
 @section('content')
     <div class="row w-100">
         <div class="col-lg-12 mx-auto">
-            <div class="page-header mt-4 mb-5">
+            <div class="page-header" style="display: inline;">
+                <h1 class="page-title mb-2">Reports</h1>
                 <div>
-                    <h1 class="page-title"><i class="fe fe-trending-up"></i> Reports</h1>
-                    <p class="text-muted mb-0 mt-1">Access all your HR and organizational reports in one place.</p>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Reports</li>
+                    </ol>
                 </div>
             </div>
 
@@ -95,7 +98,8 @@
 
                 {{-- 3. Employee Upcoming Renewals --}}
                 <div class="col-xl-3 col-lg-4 col-md-6">
-                    <a href="{{ route('reports.employee_upcoming_renewals') }}" class="report-card h-100 border-indigo-soft">
+                    <a href="{{ route('reports.employee_upcoming_renewals') }}"
+                        class="report-card h-100 border-indigo-soft">
                         <div class="report-icon bg-soft-indigo">
                             <i class="fe fe-refresh-cw"></i>
                         </div>
@@ -205,7 +209,7 @@
         /* Soft Colors */
         .bg-soft-primary {
             background: #f0f4ff;
-            color: #4f46e5!important;
+            color: #4f46e5 !important;
         }
 
         .bg-soft-info {
