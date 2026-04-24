@@ -220,6 +220,7 @@
                             <input type="hidden" name="type" id="type">
                         </div>
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-default" data-bs-dismiss="modal">Close</button>
