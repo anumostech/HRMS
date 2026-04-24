@@ -50,7 +50,7 @@
                 <!-- Progress -->
                 <div class="mt-4 d-none" id="progressSection">
                     <div class="progress">
-                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-green-1"
+                        <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-green-1 h-2"
                             style="width:0%" style="color:green;background:green;"></div>
                     </div>
                     <div class="text-center mt-2">
