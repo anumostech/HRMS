@@ -17,30 +17,29 @@
     <!-- Company Mobile -->
     <div class="col-md-3 mb-3">
         <label class="form-label">Company Mobile</label>
-        <input type="text" class="form-control @error('company_mobile_number') is-invalid @enderror"
+        <input type="tel" class="form-control @error('company_mobile_number') is-invalid @enderror"
             name="company_mobile_number"
             value="{{ old('company_mobile_number', $employee->company_mobile_number ?? '') }}"
-            placeholder="Enter company mobile number" pattern="[0-9]{7,15}"
-            title="Enter a valid phone number (7–15 digits)">
+            placeholder="Enter company mobile number" pattern="^\+?[0-9]{7,15}$" title="Enter a valid phone number">
         @error('company_mobile_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
     <!-- Personal Number -->
     <div class="col-md-3 mb-3">
         <label class="form-label">Personal Number</label>
-        <input type="text" class="form-control @error('personal_number') is-invalid @enderror" name="personal_number"
+        <input type="tel" class="form-control @error('personal_number') is-invalid @enderror" name="personal_number"
             value="{{ old('personal_number', $employee->personal_number ?? '') }}"
-            placeholder="Enter personal phone number" pattern="[0-9]{7,15}"
-            title="Enter a valid phone number (7–15 digits)">
+            placeholder="Enter personal phone number" pattern="^\+?[0-9]{7,15}$"
+            title="Enter a valid phone number">
         @error('personal_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
     <!-- Other Number -->
-    <div class="col-md-3 mb-3">
-        <label class="form-label">Other Number</label>
-        <input type="text" class="form-control @error('other_number') is-invalid @enderror" name="other_number"
+    <div class="col-md-3 mb-3"> 
+        <label class="form-label">1st Relative/Friend number</label>
+        <input type="tel" class="form-control @error('other_number') is-invalid @enderror" name="other_number"
             value="{{ old('other_number', $employee->other_number ?? '') }}" placeholder="Enter alternate number"
-            pattern="[0-9]{7,15}" title="Enter a valid phone number (7–15 digits)">
+            pattern="^\+?[0-9]{7,15}$" title="Enter a valid phone number ">
         @error('other_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
@@ -66,11 +65,11 @@
         $otherDocs = [
             'educational_1st_page' => 'Education 1st Page',
             'educational_2nd_page' => 'Education 2nd Page',
-            'home_country_id_proof' => 'Home Country ID Proof'
+            'home_country_id_proof' => 'Home Country ID / Address Proof'
         ];
     @endphp
     @foreach($otherDocs as $field => $label)
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">{{ $label }}</label>
             <input type="file" class="form-control mb-1 document-upload" data-field="{{ $field }}"
                 accept=".pdf,.jpg,.jpeg,.png">

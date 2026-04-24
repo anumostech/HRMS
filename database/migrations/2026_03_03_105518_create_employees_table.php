@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->date('dob')->nullable();
             $table->date('joining_date')->nullable();
             $table->string('gender')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('marital_status')->nullable();
             $table->text('special_days')->nullable();
 
             // Passport Details
@@ -71,6 +73,8 @@ return new class extends Migration {
             $table->string('company_email')->nullable();
             $table->string('personal_email')->nullable();
             $table->string('home_country_id_proof')->nullable();
+            $table->string('visa_type')->nullable();
+            $table->string('labor_contract')->nullable();
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();

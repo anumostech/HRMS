@@ -34,7 +34,7 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $companies = Company::where('organization_id','1')->get();
+        $companies = Company::where('organization_id', '1')->get();
         $departments = Department::all();
         $designations = Designation::orderBy('id', 'desc')->get();
         $organizations = Organization::all();
@@ -47,12 +47,14 @@ class EmployeeController extends Controller
         $data = $request->validated();
 
         $documentFields = [
+            'avatar',
             'passport_1st_page',
             'passport_2nd_page',
             'passport_outer_page',
             'passport_id_page',
             'visa_page',
             'labor_card',
+            'labor_contract',
             'eid_1st_page',
             'eid_2nd_page',
             'educational_1st_page',
@@ -99,7 +101,7 @@ class EmployeeController extends Controller
 
         Employee::create($data);
 
-        return redirect()->back()->with('success', 'Employee created successfully.');
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
 
     public function show(Employee $employee)
@@ -121,12 +123,14 @@ class EmployeeController extends Controller
         $data = $request->validated();
 
         $documentFields = [
+            'avatar',
             'passport_1st_page',
             'passport_2nd_page',
             'passport_outer_page',
             'passport_id_page',
             'visa_page',
             'labor_card',
+            'labor_contract',
             'eid_1st_page',
             'eid_2nd_page',
             'educational_1st_page',
@@ -180,7 +184,7 @@ class EmployeeController extends Controller
 
         $employee->update($data);
 
-        return redirect()->back()->with('success', 'Employee updated successfully.');
+        return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }
 
     public function updateStatus(Request $request, Employee $employee)

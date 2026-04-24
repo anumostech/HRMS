@@ -21,12 +21,16 @@ use App\Http\Controllers\Employee\PunchController;
 use App\Http\Controllers\Employee\TaskReportController as EmployeeTaskReportController;
 use App\Http\Controllers\Employee\WfhRequestController as EmployeeWfhRequestController;
 use App\Http\Controllers\Employee\LeaveController as EmployeeLeaveController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\LeaveAllocationController;
 use Dom\Document;
 use Illuminate\Support\Facades\Artisan;
 
 // Auth Routes
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');;
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');;
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+;
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+;
 Route::post('/login', [LoginController::class, 'login'])->name('authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -78,12 +82,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('companies', CompanyController::class);
     Route::get('/companies/by-organization/{organizationId}', [CompanyController::class, 'getByOrganization'])->name('companies.by_organization');
 
-    Route::prefix('/departments')->group(function () {
-        Route::post('/store', [DepartmentController::class, 'store'])->name('departments.store');
-    });
+    Route::resource('departments', DepartmentController::class);
 
+    // Agreements
     Route::prefix('/agreements')->group(function () {
         Route::get('/index', [AgreementController::class, 'index'])->name('agreements.index');
+        Route::get('/{id}', [AgreementController::class, 'show'])->name('agreements.show');
+        Route::post('/update/{id}', [AgreementController::class, 'update'])->name('agreements.update');
+        Route::delete('/{id}', [AgreementController::class, 'destroy'])->name('agreements.destroy');
         Route::post('/parties/store', [DocumentController::class, 'storeParty'])->name('parties.store');
     });
 
@@ -98,6 +104,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/types/update/{leaveType}', [\App\Http\Controllers\LeaveTypeController::class, 'update'])->name('leaves.types.update');
         Route::post('/types/delete/{leaveType}', [\App\Http\Controllers\LeaveTypeController::class, 'destroy'])->name('leaves.types.delete');
         Route::post('/types/update-status/{leaveType}', [\App\Http\Controllers\LeaveTypeController::class, 'updateStatus'])->name('leaves.types.updateStatus');
+
+        // Leave Allocation Management
+        Route::get('/allocations', [LeaveAllocationController::class, 'index'])->name('leave-allocations.index');
+        Route::get('/allocations/{employee}/edit', [LeaveAllocationController::class, 'edit'])->name('leave-allocations.edit');
+        Route::post('/allocations/{employee}/update', [LeaveAllocationController::class, 'update'])->name('leave-allocations.update');
     });
 
     // HR Modules
@@ -110,18 +121,40 @@ Route::middleware('auth')->group(function () {
     // Task Reports
     Route::get('/task-reports', [TaskReportController::class, 'index'])->name('task_reports.index');
 
+    // Attendance Requests (Admin)
+    Route::prefix('attendance-requests')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AttendanceRequestController::class, 'index'])->name('attendance_requests.index');
+        Route::get('/{attendanceRequest}/edit', [\App\Http\Controllers\AttendanceRequestController::class, 'edit'])->name('attendance_requests.edit');
+        Route::post('/{attendanceRequest}/update', [\App\Http\Controllers\AttendanceRequestController::class, 'update'])->name('attendance_requests.update');
+        Route::post('/{attendanceRequest}/status', [\App\Http\Controllers\AttendanceRequestController::class, 'updateStatus'])->name('attendance_requests.status');
+        Route::delete('/{attendanceRequest}', [\App\Http\Controllers\AttendanceRequestController::class, 'destroy'])->name('attendance_requests.destroy');
+    });
+
+    // Reports Section
+    Route::prefix('reports')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/employee-details', [ReportController::class, 'employeeDetails'])->name('reports.employee_details');
+        Route::get('/employee-nearest-expiry', [ReportController::class, 'employeeNearestExpiry'])->name('reports.employee_nearest_expiry');
+        Route::get('/employee-upcoming-renewals', [ReportController::class, 'employeeUpcomingRenewals'])->name('reports.employee_upcoming_renewals');
+        Route::get('/company-nearest-expiry', [ReportController::class, 'companyNearestExpiry'])->name('reports.company_nearest_expiry');
+        Route::get('/company-upcoming-renewals', [ReportController::class, 'companyUpcomingRenewals'])->name('reports.company_upcoming_renewals');
+        Route::get('/attendance-report', [ReportController::class, 'attendanceReport'])->name('reports.attendance');
+        Route::get('/leave-requests', [ReportController::class, 'leaveRequestsReport'])->name('reports.leave_requests');
+        Route::get('/pending-leaves', [ReportController::class, 'pendingLeavesReport'])->name('reports.pending_leaves');
+    });
+
 });
 
 // ─── Employee Portal (separate guard — no admin auth needed) ──────────────────
 Route::prefix('employee')->name('employee.')->group(function () {
-    Route::get('/login',  [\App\Http\Controllers\Employee\AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', [\App\Http\Controllers\Employee\AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [\App\Http\Controllers\Employee\AuthController::class, 'login'])->name('authenticate');
     Route::post('/logout', [\App\Http\Controllers\Employee\AuthController::class, 'logout'])->name('logout');
 
     Route::middleware('employee.auth')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Employee\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/profile',   [\App\Http\Controllers\Employee\ProfileController::class, 'show'])->name('profile');
-        Route::post('/profile',  [\App\Http\Controllers\Employee\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile', [\App\Http\Controllers\Employee\ProfileController::class, 'show'])->name('profile');
+        Route::post('/profile', [\App\Http\Controllers\Employee\ProfileController::class, 'update'])->name('profile.update');
         Route::post('/profile/password', [\App\Http\Controllers\Employee\ProfileController::class, 'changePassword'])->name('profile.password');
 
         // Employee Leave Routes
@@ -130,6 +163,10 @@ Route::prefix('employee')->name('employee.')->group(function () {
             Route::get('/create', [EmployeeLeaveController::class, 'create'])->name('leaves.create');
             Route::post('/store', [EmployeeLeaveController::class, 'store'])->name('leaves.store');
         });
+
+        // Exception Requests
+        Route::get('/attendance-requests', [\App\Http\Controllers\Employee\AttendanceRequestController::class, 'index'])->name('attendance.request.index');
+        Route::post('/attendance-request/store', [\App\Http\Controllers\Employee\AttendanceRequestController::class, 'store'])->name('attendance.request.store');
 
         // WFH Requests
         Route::get('/wfh-requests', [EmployeeWfhRequestController::class, 'index'])->name('wfh.index');

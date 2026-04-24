@@ -20,18 +20,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($reports as $report)
+                    @foreach($reports as $report)
                     <tr>
                         <td class="fw-bold">{{ \Carbon\Carbon::parse($report->date)->format('d M Y') }}</td>
                         <td>{{ $report->tasks_completed }}</td>
                         <td>{{ $report->plan_tomorrow }}</td>
                         <td>{{ $report->remarks ?? '-' }}</td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No task reports found.</td>
-                    </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>

@@ -39,8 +39,8 @@ class LateWarningNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject('Late Warning Notification - ' . $this->employee->name)
-                    ->line('The employee ' . $this->employee->name . ' has been late ' . $this->lateCount . ' times this month.')
+                    ->subject('Late Warning Notification - ' . $this->employee->first_name)
+                    ->line('The employee ' . $this->employee->first_name . ' has been late ' . $this->lateCount . ' times this month.')
                     ->action('View Employee', route('employees.show', $this->employee->id))
                     ->line('Please take necessary action.');
     }
@@ -54,10 +54,10 @@ class LateWarningNotification extends Notification
     {
         return [
             'employee_id' => $this->employee->id,
-            'employee_name' => $this->employee->name,
+            'employee_name' => $this->employee->first_name,
             'late_count' => $this->lateCount,
             'title' => 'Late',
-            'message' => $this->employee->name . ' has been late ' . $this->lateCount . ' times this month.'
+            'message' => $this->employee->first_name . ' has been late ' . $this->lateCount . ' times this month.'
         ];
     }
 }

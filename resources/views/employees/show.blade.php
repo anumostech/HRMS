@@ -24,12 +24,12 @@
             </div>
             <div class="card-body">
                 <div class="text-center mb-4">
-                    <h4 class="mb-0 fw-bold">{{ $employee->name }}</h4>
-                    <p class="text-muted">{{ $employee->designation }} | {{ $employee->department }}</p>
+                    <h4 class="mb-0 fw-bold">{{ $employee->first_name }} {{ $employee->last_name }}</h4>
+                    <p class="text-muted">{{ $employee->designation->name }} | {{ $employee->department->name }}</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Company <span class="fw-semibold">{{ $employee->company->name ?? 'N/A' }}</span>
+                        Company <span class="fw-semibold">{{ $employee->company->company_name ?? 'N/A' }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Joining Date <span class="fw-semibold">{{ $employee->joining_date ?? 'N/A' }}</span>
@@ -40,6 +40,35 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Gender <span class="fw-semibold">{{ $employee->gender ?? 'N/A' }}</span>
                     </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Leave Balances ({{ date('Y') }})</h3>
+                <div class="card-options">
+                    <a href="{{ route('leave-allocations.edit', $employee->id) }}" class="btn btn-sm btn-outline-primary">Manage</a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    @foreach($employee->getLeaveSummary() as $item)
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-semibold text-dark">{{ $item['type'] }}</span>
+                            <span class="badge bg-success-transparent text-success">{{ $item['balance'] }} Bal</span>
+                        </div>
+                        <div class="progress progress-xs" style="height: 4px;">
+                            <div class="progress-bar bg-primary" role="progressbar" 
+                                 style="width: {{ $item['allocated'] > 0 ? ($item['taken'] / $item['allocated'] * 100) : 0 }}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted text-extra-small">{{ $item['taken'] }} taken</small>
+                            <small class="text-muted text-extra-small">{{ $item['allocated'] }} allocated</small>
+                        </div>
+                    </li>
+                    @endforeach
                 </ul>
             </div>
         </div>
@@ -78,6 +107,7 @@
                     'Educational 1' => 'educational_1st_page',
                     'Educational 2' => 'educational_2nd_page',
                     'Home ID' => 'home_country_id_proof',
+                    'Labor Contract' => 'labor_contract',
                     ];
                     @endphp
 
@@ -124,7 +154,7 @@
                         <p><strong>Father Name:</strong> {{ $employee->father_name ?? 'N/A' }}</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Visa Number:</strong> {{ $employee->visa_number ?? 'N/A' }}</p>
+                        <p><strong>Visa Number:</strong> {{ $employee->visa_number ?? 'N/A' }} ({{ $employee->visa_type ?? 'N/A' }})</p>
                         <p><strong>Labor Number:</strong> {{ $employee->labor_number ?? 'N/A' }}</p>
                         <p><strong>EID Number:</strong> {{ $employee->eid_number ?? 'N/A' }}</p>
                     </div>

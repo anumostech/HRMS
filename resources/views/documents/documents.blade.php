@@ -729,7 +729,7 @@
 
             name: document.querySelector('[name="name"]').value,
 
-            description: document.querySelector('[name="description"]').value,
+            description: document.querySelector('textarea[name="description"]').value,
 
             folder: document.querySelector('[name="folder"]').value,
 

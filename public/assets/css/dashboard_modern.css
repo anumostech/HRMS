@@ -59,7 +59,7 @@
 
 .bg-soft-primary {
     background-color: rgba(99, 102, 241, 0.1);
-    color: var(--hr-primary);
+    color: var(--hr-primary)!important;
 }
 
 .bg-soft-success {

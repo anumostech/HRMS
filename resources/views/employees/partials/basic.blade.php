@@ -1,5 +1,6 @@
 <div class="row">
 
+    <!-- Passport Photo -->
     <!-- Full Name -->
     <div class="col-md-3 mb-3">
         <label class="form-label">First Name <span class="text-danger">*</span></label>
@@ -19,7 +20,8 @@
     <div class="col-md-3 mb-3">
         <label class="form-label">Company <span class="text-danger">*</span></label>
         <div class="select-wrapper">
-            <select class="form-control @error('company_id') is-invalid @enderror" name="company_id" id="companySelect" required>
+            <select class="form-control @error('company_id') is-invalid @enderror" name="company_id" id="companySelect"
+                required>
                 <option value="">Select Company</option>
                 @foreach($companies as $company)
                     <option value="{{ $company->id }}" {{ old('company_id', $employee->company_id) == $company->id ? 'selected' : '' }}>{{ $company->company_name }}</option>
@@ -58,6 +60,8 @@
                 @foreach($designations as $designation)
                     <option value="{{ $designation->id }}" {{ old('designation_id', $employee->designation_id) == $designation->id ? 'selected' : '' }}>{{ $designation->name }}</option>
                 @endforeach
+                <option value="__new_designation__" id="addDesignationOption" class="text-center"
+                    style="background:#0D9C1E;color:#fff;">+ Add Designation</option>
             </select>
             @error('designation_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
@@ -104,7 +108,7 @@
     </div>
 
     <!-- Gender -->
-    <div class="col-md-3 mb-3">
+    <div class="col-md-4 mb-3">
         <label class="form-label">Gender</label>
         <div class="select-wrapper">
             <select class="form-control" name="gender">
@@ -119,15 +123,32 @@
         </div>
     </div>
 
-    <!-- Leave Allocation -->
-    <div class="col-md-3 mb-3">
-        <label class="form-label">Leave Allocation (Days)</label>
-        <input type="number" class="form-control @error('total_leaves_allocated') is-invalid @enderror"
-            name="total_leaves_allocated"
-            value="{{ old('total_leaves_allocated', $employee->total_leaves_allocated ?? 0) }}"
-            placeholder="Enter total days">
-        @error('total_leaves_allocated') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Nationality</label>
+        <input type="text" class="form-control @error('nationality') is-invalid @enderror" name="nationality"
+            value="{{ old('nationality', $employee->nationality ?? '') }}" placeholder="Enter nationality">
+        @error('nationality') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Marital Status</label>
+        <div class="select-wrapper">
+            <select class="form-control" name="marital_status">
+                <option value="">Select Marital Status</option>
+                <option value="Single" {{ old('marital_status', $employee->marital_status ?? '') == 'Single' ? 'selected' : '' }}>Single
+                </option>
+                <option value="Married" {{ old('marital_status', $employee->marital_status ?? '') == 'Married' ? 'selected' : '' }}>Married
+                </option>
+                <option value="Divorced" {{ old('marital_status', $employee->marital_status ?? '') == 'Divorced' ? 'selected' : '' }}>Divorced
+                </option>
+                <option value="Widowed" {{ old('marital_status', $employee->marital_status ?? '') == 'Widowed' ? 'selected' : '' }}>Widowed
+                </option>
+            </select>
+        </div>
+    </div>
+    
+
+
 
     <!-- Special Days -->
     <div class="col-md-12 mb-3">
@@ -192,6 +213,47 @@
                     </div>
                 </div>
             @endif
+        </div>
+    </div>
+    <div class="col-md-12 mb-4">
+        <label class="form-label fw-semibold">Passport Size Photo</label>
+        <div class="d-flex align-items-center gap-4">
+            <!-- Preview -->
+            <div id="photoPreviewWrapper"
+                style="width:110px;height:130px;border:2px dashed #ccc;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f8f9fa;flex-shrink:0;">
+                @if(!empty($employee->avatar))
+                    <img id="photoPreview" src="{{ asset('storage/' . $employee->avatar) }}"
+                        style="width:100%;height:100%;object-fit:cover;" alt="Photo">
+                @else
+                    <img id="photoPreview" src="" style="width:100%;height:100%;object-fit:cover;display:none;" alt="Photo">
+                    <span id="photoPlaceholder" style="color:#aaa;font-size:12px;text-align:center;padding:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#ccc" viewBox="0 0 16 16">
+                            <path
+                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.029 10 8 10c-2.029 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                        </svg>
+                        <br>Photo
+                    </span>
+                @endif
+            </div>
+            <!-- Upload Controls -->
+            <div>
+                <label class="btn btn-outline-primary btn-sm mb-1" for="avatarUpload">
+                    <i class="fe fe-upload me-1"></i> Upload Photo
+                </label>
+                <input type="file" id="avatarUpload" class="d-none document-upload" accept="image/*"
+                    data-field="avatar">
+                <input type="hidden" name="avatar" id="avatarPath" value="{{ old('avatar', $employee->avatar ?? '') }}">
+                <div class="text-muted" style="font-size:12px;">
+                    Accepted: JPG, PNG, GIF. Max 2MB.<br>
+                    Recommended size: 35mm × 45mm (passport size).
+                </div>
+                @if(!empty($employee->avatar))
+                    <a href="{{ asset('storage/' . $employee->avatar) }}" target="_blank"
+                        class="btn btn-outline-secondary btn-sm mt-1">
+                        <i class="fe fe-eye me-1"></i> View Current
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
 

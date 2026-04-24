@@ -19,7 +19,9 @@ class LeaveController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('employee.leaves.index', compact('leaveRequests'));
+        $leaveSummary = $employee->getLeaveSummary();
+
+        return view('employee.leaves.index', compact('leaveRequests', 'leaveSummary'));
     }
 
     public function create()
@@ -27,14 +29,10 @@ class LeaveController extends Controller
         $employee = auth('employee')->user();
         $leaveTypes = LeaveType::where('status', true)->get();
 
-        // Calculate current balance
-        $leavesTaken = LeaveRequest::where('employee_id', $employee->id)
-            ->whereIn('status', ['approved', 'pending'])
-            ->sum('duration_days');
+        // Get leave summary for current year
+        $leaveSummary = $employee->getLeaveSummary();
 
-        $remainingBalance = $employee->total_leaves_allocated - $leavesTaken;
-
-        return view('employee.leaves.create', compact('leaveTypes', 'remainingBalance'));
+        return view('employee.leaves.create', compact('leaveTypes', 'leaveSummary'));
     }
 
     public function store(Request $request)
@@ -63,15 +61,11 @@ class LeaveController extends Controller
         // Leave balance check
         $employee = auth('employee')->user();
 
-        // Count already taken/pending leaves
-        $leavesTaken = LeaveRequest::where('employee_id', $employee->id)
-            ->whereIn('status', ['approved', 'pending'])
-            ->sum('duration_days');
-
-        $remainingBalance = $employee->total_leaves_allocated - $leavesTaken;
+        // Get balance for the requested leave type
+        $remainingBalance = $employee->getLeaveBalance($request->leave_type_id);
 
         if ($durationDays > $remainingBalance) {
-            return back()->withErrors(['error' => "Insufficient leave balance. You have only $remainingBalance days remaining."])->withInput();
+            return back()->withErrors(['error' => "Insufficient leave balance for this leave type. You have only $remainingBalance days remaining."])->withInput();
         }
 
         $documentPath = null;

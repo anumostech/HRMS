@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($requests as $req)
+                    @foreach($requests as $req)
                     <tr>
                         <td class="fw-bold">{{ \Carbon\Carbon::parse($req->date)->format('d M Y') }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($req->reason, 50) }}</td>
@@ -40,11 +40,7 @@
                             @endif
                         </td>
                     </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">No WFH requests found.</td>
-                    </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
