@@ -48,8 +48,8 @@
                     </form>
                 </div>
                 <!-- Progress -->
-                <div class="mt-4 d-none" id="progressSection">
-                    <div class="progress">
+                <div class="mt-4 d-none m-2" id="progressSection">
+                    <div class="progress h-2">
                         <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-green-1 h-2"
                             style="width:0%" style="color:green;background:green;"></div>
                     </div>
@@ -103,7 +103,15 @@
 
                         if (res.status === 'completed') {
                             clearInterval(interval);
-                            location.reload();
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Upload Completed',
+                                text: 'Attendance processed successfully!',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = "{{ route('attendance.index') }}";
+                            });
                         }
 
                     })
