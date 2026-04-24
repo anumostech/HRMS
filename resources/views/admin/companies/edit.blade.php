@@ -27,8 +27,8 @@
 @endsection
 
 @section('content')
-    <div class="page-header">
-        <h1 class="page-title">Edit Company</h1>
+    <div class="page-header" style="display: inline;">
+        <h1 class="page-title mb-2">Edit Company</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('companies.index') }}">Companies</a></li>

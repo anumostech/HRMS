@@ -13,7 +13,12 @@
             @csrf
             <div class="mb-3">
                 <label class="form-label fw-bold">Date <span class="text-danger">*</span></label>
-                <input type="date" name="date" class="form-control" required min="{{ date('Y-m-d') }}">
+                <div class="position-relative">
+                    <input type="text" name="date" class="form-control datepicker" required placeholder="DD-MM-YYYY">
+                    <span class="date-icon" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;">
+                        <i class="fe fe-calendar"></i>
+                    </span>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label fw-bold">Reason <span class="text-danger">*</span></label>

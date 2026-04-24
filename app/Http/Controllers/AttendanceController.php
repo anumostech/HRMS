@@ -649,8 +649,8 @@ class AttendanceController extends Controller
 
             ProcessAttendanceJob::dispatch($upload->id);
 
-            // $this->notifyHRAboutLatecomers($request->company_id);
-            // $this->notifyHRAboutAbsentees($request->company_id);
+            $this->notifyHRAboutLatecomers();
+            $this->notifyHRAboutAbsentees();
 
             return response()->json([
                 'success' => true,
@@ -681,13 +681,12 @@ class AttendanceController extends Controller
         return response()->json($upload);
     }
 
-    private function notifyHRAboutLatecomers($companyId)
+    private function notifyHRAboutLatecomers()
     {
         $hrUsers = \App\Models\User::all(); // Notify all admins
         $monthStart = Carbon::now()->startOfMonth();
 
-        $lateEmployees = AttendanceLog::where('company_id', $companyId)
-            ->whereBetween('punch_in', [$monthStart, Carbon::now()])
+        $lateEmployees = AttendanceLog::whereBetween('punch_in', [$monthStart, Carbon::now()])
             ->whereRaw("TIME(punch_in) >= '08:11:00' AND TIME(punch_in) <= '12:00:00'")
             ->select('userid', DB::raw('count(*) as late_count'))
             ->groupBy('userid')
@@ -704,13 +703,12 @@ class AttendanceController extends Controller
         }
     }
 
-    private function notifyHRAboutAbsentees($companyId)
+    private function notifyHRAboutAbsentees()
     {
         $today = Carbon::today()->toDateString();
         $hrUsers = \App\Models\User::all();
 
-        $activeEmployees = Employee::where('company_id', $companyId)
-            ->get();
+        $activeEmployees = Employee::where('status', 'active')->get();
 
         foreach ($activeEmployees as $employee) {
             $punchedIn = AttendanceLog::where('userid', $employee->id)

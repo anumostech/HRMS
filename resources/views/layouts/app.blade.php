@@ -446,6 +446,13 @@
                                     </a>
                                 </li>
                                 <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('attendance_requests.*') ? 'active' : '' }}"
+                                        href="{{ route('attendance_requests.index') }}">
+                                        <i class="side-menu__icon fe fe-file-text"></i>
+                                        <span class="side-menu__label">Attendance Requests</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
                                     <a class="sidenav-menu-item {{ request()->routeIs('meetings.*') ? 'active' : '' }}"
                                         href="#">
                                         <i class="side-menu__icon fe fe-calendar"></i>

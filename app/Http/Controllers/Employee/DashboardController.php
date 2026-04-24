@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceLog;
+use App\Models\LeaveRequest;
+use App\Models\Designation;
+use App\Models\WfhRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -39,7 +42,7 @@ class DashboardController extends Controller
             ->first();
 
         // Leave stats
-        $totalLeavesTaken = \App\Models\LeaveRequest::where('employee_id', $employee->id)
+        $totalLeavesTaken = LeaveRequest::where('employee_id', $employee->id)
             ->where('status', 'approved')
             ->sum('duration_days');
 
@@ -50,7 +53,7 @@ class DashboardController extends Controller
         $canPunch = false;
 
         // 1. Check default designation punch access
-        $designation = \App\Models\Designation::find($employee->designation_id);
+        $designation = Designation::find($employee->designation_id);
         if ($designation && $designation->default_punch_access) {
             $canPunch = true;
         }
@@ -62,8 +65,8 @@ class DashboardController extends Controller
 
         // 3. Check for approved WFH request today
         if (!$canPunch) {
-            $wfh = \App\Models\WfhRequest::where('employee_id', $employee->id)
-                ->whereDate('log_date', $today)
+            $wfh = WfhRequest::where('employee_id', $employee->id)
+                ->whereDate('date', $today)
                 ->where('status', 'Approved')
                 ->exists();
             if ($wfh) {

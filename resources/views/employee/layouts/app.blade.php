@@ -276,6 +276,7 @@
             border-radius: 16px !important;
             background: #fff !important;
             margin-top: 5px !important;
+            z-index: 9999 !important;
         }
 
         .datepicker table {
@@ -438,6 +439,38 @@
                     My Profile
                 </a>
             </div>
+
+            <div class="mt-4 px-3 mb-2">
+                <small class="text-uppercase fw-bold text-white-50" style="font-size: 0.65rem; letter-spacing: 1px;">Attendance Requests</small>
+            </div>
+
+            <div class="emp-nav-item">
+                <a href="{{ route('employee.attendance.request.index') }}"
+                    class="emp-nav-link {{ request()->routeIs('employee.attendance.request.index') ? 'active' : '' }}">
+                    <i class="fe fe-list me-2"></i> My Requests
+                </a>
+            </div>
+
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="early_check_in">
+                    <i class="fe fe-clock me-2"></i> Early Check-in
+                </a>
+            </div>
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="late_check_in">
+                    <i class="fe fe-alert-circle me-2"></i> Late Check-in
+                </a>
+            </div>
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="missed_punch_in">
+                    <i class="fe fe-arrow-down-circle me-2"></i> Missed Punch In
+                </a>
+            </div>
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="missed_punch_out">
+                    <i class="fe fe-arrow-up-circle me-2"></i> Missed Punch Out
+                </a>
+            </div>
         </nav>
 
         <div class="emp-sidebar-footer">
@@ -475,11 +508,78 @@
         </main>
     </div>
 
+    {{-- Exception Request Modal --}}
+    <div class="modal fade" id="exceptionModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <form action="{{ route('employee.attendance.request.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header bg-soft-primary text-primary border-0">
+                        <h5 class="modal-title fw-bold" id="exceptionModalTitle"><i class="fe fe-file-text me-2"></i> Submit Request</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <input type="hidden" name="type" id="exceptionType">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Date <span class="text-danger">*</span></label>
+                            <div class="position-relative">
+                                <input type="text" name="request_date" class="form-control datepicker" placeholder="DD-MM-YYYY" required>
+                                <span class="date-icon" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;">
+                                    <i class="fe fe-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Time <span class="text-danger">*</span></label>
+                            <input type="time" name="request_time" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Reason <span class="text-danger">*</span></label>
+                            <textarea name="reason" class="form-control" rows="3" required placeholder="Provide a valid reason..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fe fe-send me-1"></i> Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var exceptionModal = document.getElementById('exceptionModal');
+            if(exceptionModal) {
+                exceptionModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var type = button.getAttribute('data-type');
+                    
+                    var modalTitle = exceptionModal.querySelector('.modal-title');
+                    var typeInput = exceptionModal.querySelector('#exceptionType');
+                    
+                    var titleMap = {
+                        'early_check_in': 'Early Check-in Request',
+                        'late_check_in': 'Late Check-in Request',
+                        'missed_punch_in': 'Missed Punch In Request',
+                        'missed_punch_out': 'Missed Punch Out Request'
+                    };
+                    
+                    modalTitle.innerHTML = '<i class="fe fe-file-text me-2"></i> ' + titleMap[type];
+                    typeInput.value = type;
+                });
+            }
+        });
+    </script>
     <script>
         $('.datepicker').datepicker({
             format: "dd-mm-yyyy",

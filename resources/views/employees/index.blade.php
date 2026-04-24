@@ -36,7 +36,7 @@
                     <table class="table table-modern text-nowrap" id="basic-datatable">
                         <thead>
                             <tr>
-                                <th class="wd-15p border-bottom-0">Sl.No.</th>
+                                <th class="wd-5p border-bottom-0">#</th>
                                 <th class="wd-15p border-bottom-0">Name</th>
                                 <th class="wd-15p border-bottom-0">Designation</th>
                                 <th class="wd-20p border-bottom-0">Department</th>
@@ -50,7 +50,21 @@
                             @foreach($employees as $key => $employee)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $employee->first_name.' '.$employee?->last_name }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                    @if($employee->avatar)
+                                        <img src="{{ asset('storage/' . $employee->avatar) }}"
+                                             alt="{{ $employee->first_name }}"
+                                             style="width:40px;height:40px;object-fit:cover;border-radius:25px;border:1px solid #dee2e6;"
+                                             title="{{ $employee->first_name }} {{ $employee->last_name }}">
+                                    @else
+                                        <div style="width:40px;height:40px;border-radius:25px;background:#d3ebd1d6;display:flex;align-items:center;justify-content:center;font-weight:600;color:#568f3f;font-size:15px;border:1px solid #dee2e6;">
+                                            {{ strtoupper(substr($employee->first_name,0,1)) }}{{ strtoupper(substr($employee->last_name ?? '',0,1)) }}
+                                        </div>
+                                    @endif
+                                    {{ $employee->first_name.' '.$employee?->last_name }}
+                                    </div>
+                                </td>
                                 <td>{{ $employee->designation?->name }}</td>
                                 <td>{{ $employee->department->name ?? '' }}</td>
                                 <td>{{ $employee->company->company_name ?? '' }}</td>

@@ -139,7 +139,7 @@ class Employee extends Authenticatable
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-     public function designation()
+    public function designation()
     {
         return $this->belongsTo(Designation::class, 'designation_id');
     }
@@ -165,18 +165,18 @@ class Employee extends Authenticatable
     public function getLeaveBalance($leaveTypeId, $year = null)
     {
         $year = $year ?? date('Y');
-        
+
         $allocated = $this->leaveAllocations()
             ->where('leave_type_id', $leaveTypeId)
             ->where('year', $year)
             ->sum('allocated_days');
-            
+
         $taken = $this->leaveRequests()
             ->where('leave_type_id', $leaveTypeId)
             ->where('status', 'approved')
             ->whereYear('start_date', $year)
             ->sum('duration_days');
-            
+
         return $allocated - $taken;
     }
 

@@ -47,6 +47,7 @@ class EmployeeController extends Controller
         $data = $request->validated();
 
         $documentFields = [
+            'avatar',
             'passport_1st_page',
             'passport_2nd_page',
             'passport_outer_page',
@@ -122,6 +123,7 @@ class EmployeeController extends Controller
         $data = $request->validated();
 
         $documentFields = [
+            'avatar',
             'passport_1st_page',
             'passport_2nd_page',
             'passport_outer_page',

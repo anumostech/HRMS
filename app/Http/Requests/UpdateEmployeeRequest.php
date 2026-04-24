@@ -70,6 +70,7 @@ class UpdateEmployeeRequest extends FormRequest
         $employee = $this->route('employee');
         
         return [
+            'avatar' => 'nullable|string',
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'organization_id' => 'nullable|exists:organizations,id',

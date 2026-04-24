@@ -5,10 +5,16 @@
 @section('content')
     <div class="row w-100 mt-4">
         <div class="col-lg-6 mx-auto">
+            <div class="page-header" style="display: inline;">
+            <h1 class="page-title mb-2">Add Designation</h1>
+            <div>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('designations.index') }}">Designations</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Designation</li>
+                </ol>
+            </div>
+        </div>
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0 fw-bold"><i class="fe fe-plus me-2"></i>Add Designation</h5>
-                </div>
                 <div class="card-body p-4">
                     <form action="{{ route('designations.store') }}" method="POST">
                         @csrf

@@ -5,8 +5,8 @@
 @section('content')
 <div class="row">
     <div class="col-lg-8 mx-auto">
-        <div class="page-header mt-4 mb-4">
-            <h1 class="page-title text-primary">Edit Department</h1>
+        <div class="page-header" style="display: inline;">
+            <h1 class="page-title mb-2">Edit Department</h1>
             <div>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('departments.index') }}">Departments</a></li>

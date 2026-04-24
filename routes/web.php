@@ -121,6 +121,15 @@ Route::middleware('auth')->group(function () {
     // Task Reports
     Route::get('/task-reports', [TaskReportController::class, 'index'])->name('task_reports.index');
 
+    // Attendance Requests (Admin)
+    Route::prefix('attendance-requests')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AttendanceRequestController::class, 'index'])->name('attendance_requests.index');
+        Route::get('/{attendanceRequest}/edit', [\App\Http\Controllers\AttendanceRequestController::class, 'edit'])->name('attendance_requests.edit');
+        Route::post('/{attendanceRequest}/update', [\App\Http\Controllers\AttendanceRequestController::class, 'update'])->name('attendance_requests.update');
+        Route::post('/{attendanceRequest}/status', [\App\Http\Controllers\AttendanceRequestController::class, 'updateStatus'])->name('attendance_requests.status');
+        Route::delete('/{attendanceRequest}', [\App\Http\Controllers\AttendanceRequestController::class, 'destroy'])->name('attendance_requests.destroy');
+    });
+
     // Reports Section
     Route::prefix('reports')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->name('reports.index');
@@ -154,6 +163,10 @@ Route::prefix('employee')->name('employee.')->group(function () {
             Route::get('/create', [EmployeeLeaveController::class, 'create'])->name('leaves.create');
             Route::post('/store', [EmployeeLeaveController::class, 'store'])->name('leaves.store');
         });
+
+        // Exception Requests
+        Route::get('/attendance-requests', [\App\Http\Controllers\Employee\AttendanceRequestController::class, 'index'])->name('attendance.request.index');
+        Route::post('/attendance-request/store', [\App\Http\Controllers\Employee\AttendanceRequestController::class, 'store'])->name('attendance.request.store');
 
         // WFH Requests
         Route::get('/wfh-requests', [EmployeeWfhRequestController::class, 'index'])->name('wfh.index');

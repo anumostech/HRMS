@@ -75,10 +75,11 @@
 
             <!-- Buttons -->
             <div class="card-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-light" id="prevBtn">
-                    << Previous</button>
-                        <button type="button" class="btn btn-primary" id="nextBtn">Next >></button>
-                        <button type="submit" class="btn btn-success d-none" id="submitBtn">Save Employee</button>
+                <button type="button" class="btn btn-light" id="prevBtn"><< Previous</button>
+                <div class="d-flex gap-2 ms-auto">
+                    <button type="button" class="btn btn-primary" id="nextBtn">Next >></button>
+                    <button type="submit" class="btn btn-success d-none" id="submitBtn">Save Employee</button>
+                </div>
             </div>
         </div>
 
@@ -219,6 +220,28 @@
 
         // Init
         showStep(currentStep);
+    </script>
+    <script>
+        // Live passport photo preview
+        $(document).on('change', '#avatarUpload', function () {
+            let file = this.files[0];
+            if (!file) return;
+            let formData = new FormData();
+            formData.append('file', file);
+            formData.append('field', 'avatar');
+            formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            axios.post('{{ route("documents.uploadTempDocument") }}', formData)
+                .then(function (response) {
+                    if (response.data.success) {
+                        $('#avatarPath').val(response.data.path);
+                        $('#photoPreview').attr('src', '/storage/' + response.data.path).show();
+                        $('#photoPlaceholder').hide();
+                    }
+                })
+                .catch(function () {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Photo upload failed', showConfirmButton: false, timer: 1500 });
+                });
+        });
     </script>
     <script>
         $(document).on('click', '.addSpecialDay', function () {

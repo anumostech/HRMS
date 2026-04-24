@@ -5,125 +5,65 @@ namespace App\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\AttendanceUpload;
-use App\Models\AttendanceLog;
-use App\Models\Employee;
-use Carbon\Carbon;
 
 class ProcessAttendanceJob implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new job instance.
-     */
-    public $uploadId;
+    public $timeout = 600;
+
+    protected $uploadId;
 
     public function __construct($uploadId)
     {
         $this->uploadId = $uploadId;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle()
     {
         $upload = AttendanceUpload::find($this->uploadId);
 
-        if (!$upload) {
-            return;
-        }
+        if (!$upload) return;
 
-        $upload->update(['status' => 'processing']);
+        $upload->update([
+            'status' => 'processing',
+            'progress' => 5
+        ]);
 
         $path = storage_path('app/private/' . $upload->file_path);
 
         $handle = fopen($path, "r");
 
-        $data = [];
-
+        $chunk = [];
+        $chunkSize = 200;
         $total = 0;
-
-        // First pass → count lines
-        while (fgets($handle)) {
-            $total++;
-        }
-
-        rewind($handle);
-
-        $upload->update(['total_records' => $total]);
-
-        $processed = 0;
-        $grouped = [];
 
         while (($line = fgets($handle)) !== false) {
 
             $line = trim($line);
-            if (!$line)
-                continue;
+            if (!$line) continue;
 
-            $parts = preg_split('/\s+/', $line);
+            $chunk[] = $line;
+            $total++;
 
-            if (count($parts) < 3)
-                continue;
-
-            $userid = $parts[0];
-            $timestamp = $parts[1] . ' ' . $parts[2];
-
-            $date = Carbon::parse($timestamp)->format('Y-m-d');
-
-            $key = $userid . '_' . $date;
-
-            $grouped[$key][] = $timestamp;
-
-            $processed++;
-
-            //Update progress every 100 records
-            if ($processed % 100 == 0) {
-                $upload->update([
-                    'processed_records' => $processed,
-                    'progress' => round(($processed / $total) * 100)
-                ]);
+            if (count($chunk) >= $chunkSize) {
+                ProcessAttendanceChunkJob::dispatch($chunk, $this->uploadId);
+                $chunk = [];
             }
+        }
+
+        if (!empty($chunk)) {
+            ProcessAttendanceChunkJob::dispatch($chunk, $this->uploadId);
         }
 
         fclose($handle);
 
-        // Process grouped data
-        $employees = Employee::pluck('company_id', 'employee_id');
-
-        foreach ($grouped as $key => $timestamps) {
-
-            sort($timestamps);
-
-            [$userid, $date] = explode('_', $key);
-
-            $punchIn = $timestamps[0];
-            $punchOut = count($timestamps) > 1 ? end($timestamps) : null;
-
-            $companyId = $employees[$userid] ?? null;
-
-            if (!$companyId) {
-                \Log::warning("Company not found for user: " . $userid);
-                continue;
-            }
-
-            AttendanceLog::updateOrCreate(
-                [
-                    'userid' => $userid,
-                    'log_date' => $date,
-                ],
-                [
-                    'company_id' => $companyId,
-                    'punch_in' => $punchIn,
-                    'punch_out' => $punchOut
-                ]
-            );
-        }
-
         $upload->update([
-            'status' => 'completed',
-            'progress' => 100
+            'total_records' => $total,
+            'progress' => 40
         ]);
+
+        // Dispatch notifications AFTER processing
+        NotifyAttendanceJob::dispatch($this->uploadId);
     }
 }
