@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\LateWarningNotification;
 use App\Notifications\AbsentNotification;
+use App\Notifications\AbsentSummaryNotification;
+use App\Notifications\LateSummaryNotification;
 
 class AttendanceNotificationService
 {
@@ -27,13 +29,17 @@ class AttendanceNotificationService
             ->get();
 
         foreach ($lateEmployees as $record) {
-            $employee = Employee::find($record->userid);
+            $employee = Employee::where('employee_id', $record->userid)->first();
 
             if ($employee) {
                 foreach ($hrUsers as $user) {
                     $user->notify(new LateWarningNotification($employee, $record->late_count));
                 }
             }
+        }
+
+        foreach ($hrUsers as $user) {
+            $user->notify(new LateSummaryNotification($lateEmployees));
         }
     }
 
@@ -44,13 +50,17 @@ class AttendanceNotificationService
         $today = Carbon::today();
 
         $absentees = Employee::whereDoesntHave('attendanceLogs', function ($q) use ($today) {
-            $q->whereDate('punch_in', $today);
+            $q->whereDate('log_date', $today);
         })->get();
 
         foreach ($absentees as $employee) {
             foreach ($hrUsers as $user) {
                 $user->notify(new AbsentNotification($employee));
             }
+        }
+
+        foreach ($hrUsers as $user) {
+            $user->notify(new AbsentSummaryNotification($absentees));
         }
     }
 }
