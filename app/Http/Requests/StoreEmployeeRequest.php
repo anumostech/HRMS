@@ -66,16 +66,19 @@ class StoreEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'organization' => 'nullable|string|max:255',
+            'avatar' => 'nullable|string',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'organization_id' => 'required|exists:organizations,id',
             'employee_id' => 'nullable|unique:employees,employee_id',
-            'designation' => 'nullable|string|max:255',
+            'designation_id' => 'nullable|string|max:255',
             'department_id' => 'nullable|string|max:255',
-            'company_id' => 'required|exists:companies,id',
+            'company_id' => 'nullable',
             'dob' => 'nullable|date',
             'joining_date' => 'nullable|date',
             'gender' => 'nullable|string|max:255',
-            'special_days' => 'nullable|string',
+            'nationality' => 'nullable|string|max:255',
+            'marital_status' => 'nullable|string|max:255',
             'special_days_name.*' => 'nullable|string|max:255',
             'special_days_date.*' => 'nullable|date',
 
@@ -97,6 +100,7 @@ class StoreEmployeeRequest extends FormRequest
             'passport_id_page' => 'nullable|string',
             'visa_page' => 'nullable|string',
             'labor_card' => 'nullable|string',
+            'labor_contract' => 'nullable|string',
             'eid_1st_page' => 'nullable|string',
             'eid_2nd_page' => 'nullable|string',
             'educational_1st_page' => 'nullable|string',
@@ -105,6 +109,7 @@ class StoreEmployeeRequest extends FormRequest
 
             // Details
             'visa_number' => 'nullable|string|max:255',
+            'visa_type' => 'nullable|string|max:255',
             'visa_issued_date' => 'nullable|date',
             'visa_expiry_date' => 'nullable|date',
             'labor_number' => 'nullable|string|max:255',
@@ -114,14 +119,14 @@ class StoreEmployeeRequest extends FormRequest
             'eid_issued_date' => 'nullable|date',
             'eid_expiry_date' => 'nullable|date',
             'dependents' => 'nullable|string|max:255',
-            'company_mobile_number' => 'nullable|string|max:255',
-            'personal_number' => 'nullable|string|max:255',
-            'other_number' => 'nullable|string|max:255',
-            'home_country_number' => 'nullable|string|max:255',
+            'company_mobile_number' => 'nullable|string|max:255|unique:employees,company_mobile_number',
+            'personal_number' => 'nullable|string|max:255|unique:employees,personal_number',
+            'other_number' => 'nullable|string|max:255|unique:employees,other_number',
+            'home_country_number' => 'nullable|string|max:255|unique:employees,home_country_number',
             'company_email' => 'nullable|email|max:255',
             'personal_email' => 'nullable|email|max:255',
             'status' => 'nullable|in:active,inactive',
-            'total_leaves_allocated' => 'nullable|integer|min:0',
+            'password' => 'nullable|string|max:255',
         ];
     }
 

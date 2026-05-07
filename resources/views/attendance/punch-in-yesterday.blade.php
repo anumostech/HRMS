@@ -4,12 +4,12 @@
 
 @section('content')
 <!-- PAGE-HEADER -->
-<div class="page-header">
-    <h1 class="page-title">Attendance</h1>
+<div class="page-header" style="display: inline;">
+    <h1 class="page-title mb-2">Punched In Yesterday</h1>
     <div>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Attendance</li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Attendance</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Punched In Yesterday</li>
         </ol>
     </div>
 </div>

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,14 +12,18 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
             $table->string('employee_id');
-            $table->string('designation')->nullable();
-            $table->foreignId('department_id');
+            $table->string('designation_id')->nullable();
+            $table->foreignId('organization_id');
             $table->foreignId('company_id');
+            $table->foreignId('department_id');
             $table->date('dob')->nullable();
             $table->date('joining_date')->nullable();
             $table->string('gender')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('marital_status')->nullable();
             $table->text('special_days')->nullable();
 
             // Passport Details
@@ -70,6 +73,8 @@ return new class extends Migration
             $table->string('company_email')->nullable();
             $table->string('personal_email')->nullable();
             $table->string('home_country_id_proof')->nullable();
+            $table->string('visa_type')->nullable();
+            $table->string('labor_contract')->nullable();
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->softDeletes();

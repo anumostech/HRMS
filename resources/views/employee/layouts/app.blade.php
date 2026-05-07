@@ -17,7 +17,7 @@
     <style>
         :root {
             --primary: #6366f1;
-            --primary-dark: #4f46e5;
+            --primary-dark: #2ecc71;
             --sidebar-w: 260px;
         }
 
@@ -32,7 +32,7 @@
             left: 0;
             width: var(--sidebar-w);
             height: 100vh;
-            background: linear-gradient(180deg, #7e7fa9 0%, #7e7fa9 100%);
+            background: #496249;
             display: flex;
             flex-direction: column;
             z-index: 1000;
@@ -267,6 +267,104 @@
         .password-toggle-icon:hover {
             color: var(--primary);
         }
+
+        /* ── Modern Datepicker ── */
+        .datepicker-dropdown {
+            padding: 15px !important;
+            border: 0 !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+            border-radius: 16px !important;
+            background: #fff !important;
+            margin-top: 5px !important;
+            z-index: 9999 !important;
+        }
+
+        .datepicker table {
+            width: 100%;
+        }
+
+        .datepicker table tr td, 
+        .datepicker table tr th {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px !important;
+            border: none;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .datepicker table tr th {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .datepicker table tr th.prev, 
+        .datepicker table tr th.next,
+        .datepicker table tr th.datepicker-switch {
+            background: transparent !important;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .datepicker table tr th.prev:hover, 
+        .datepicker table tr th.next:hover {
+            background: #f3f4f6 !important;
+        }
+
+        .datepicker table tr th.dow {
+            color: #059669 !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            padding-bottom: 12px;
+        }
+
+        .datepicker table tr td.day {
+            color: #4b5563;
+        }
+
+        .datepicker table tr td.day:hover {
+            background: #ecfdf5 !important;
+            color: #059669 !important;
+            cursor: pointer;
+        }
+
+        .datepicker table tr td.old, 
+        .datepicker table tr td.new {
+            color: #d1d5db !important;
+        }
+
+        .datepicker table tr td.active, 
+        .datepicker table tr td.active:hover {
+            background: #059669 !important;
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
+        }
+
+        .datepicker table tr td.today {
+            background: #fef3c7 !important;
+            color: #d97706 !important;
+            position: relative;
+        }
+
+        .datepicker table tr td.today:after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #d97706;
+            border-radius: 50%;
+        }
+
+        .datepicker .datepicker-switch:hover {
+            background: #f3f4f6 !important;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link href="{{ asset('assets/css/plugins.css') }}" rel="stylesheet">
@@ -295,8 +393,8 @@
                 </a>
             </div>
             <div class="emp-nav-item">
-                <a href="{{ route('employee.leaves.index') }}"
-                    class="emp-nav-link {{ request()->routeIs('employee.leaves.*') ? 'active' : '' }}">
+                <a href="{{ route('employee.wfh.index') }}"
+                    class="emp-nav-link {{ request()->routeIs('employee.wfh.*') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                         viewBox="0 0 16 16">
                         <path
@@ -317,6 +415,18 @@
                 </a>
             </div>
             <div class="emp-nav-item">
+                <a href="{{ route('employee.task_reports.index') }}"
+                    class="emp-nav-link {{ request()->routeIs('employee.task_reports.*') ? 'active' : '' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                        <path d="M10.854 7.854a.5.5 0 0 0-.708-.708L7.5 9.793 6.354 8.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                    </svg>
+                    Task Reports
+                </a>
+            </div>
+            <div class="emp-nav-item">
                 <a href="{{ route('employee.profile') }}"
                     class="emp-nav-link {{ request()->routeIs('employee.profile') ? 'active' : '' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
@@ -327,6 +437,38 @@
                             d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm.354-5.854 1.5 1.5a.5.5 0 0 1-.708.708L13 11.707l-.646.647a.5.5 0 0 1-.708-.708l1-1a.5.5 0 0 1 .708 0z" />
                     </svg>
                     My Profile
+                </a>
+            </div>
+
+            <div class="mt-4 px-3 mb-2">
+                <small class="text-uppercase fw-bold text-white-50" style="font-size: 0.65rem; letter-spacing: 1px;">Attendance Requests</small>
+            </div>
+
+            <div class="emp-nav-item">
+                <a href="{{ route('employee.attendance.request.index') }}"
+                    class="emp-nav-link {{ request()->routeIs('employee.attendance.request.index') ? 'active' : '' }}">
+                    <i class="fe fe-list me-2"></i> My Requests
+                </a>
+            </div>
+
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="early_check_in">
+                    <i class="fe fe-clock me-2"></i> Early Check-in
+                </a>
+            </div>
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="late_check_in">
+                    <i class="fe fe-alert-circle me-2"></i> Late Check-in
+                </a>
+            </div>
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="missed_punch_in">
+                    <i class="fe fe-arrow-down-circle me-2"></i> Missed Punch In
+                </a>
+            </div>
+            <div class="emp-nav-item">
+                <a href="javascript:void(0)" class="emp-nav-link" data-bs-toggle="modal" data-bs-target="#exceptionModal" data-type="missed_punch_out">
+                    <i class="fe fe-arrow-up-circle me-2"></i> Missed Punch Out
                 </a>
             </div>
         </nav>
@@ -355,8 +497,8 @@
             <div class="emp-user-badge">
                 <img src="{{ Auth::guard('employee')->user()->avatar_url }}" alt="Avatar">
                 <div>
-                    <div class="emp-user-name">{{ Auth::guard('employee')->user()->name }}</div>
-                    <div class="emp-user-role">{{ Auth::guard('employee')->user()->designation ?? 'Employee' }}</div>
+                    <div class="emp-user-name">{{ Auth::guard('employee')->user()->first_name }}</div>
+                    <div class="emp-user-role">{{ Auth::guard('employee')->user()->designation?->name ?? 'Employee' }}</div>
                 </div>
             </div>
         </header>
@@ -366,15 +508,86 @@
         </main>
     </div>
 
+    {{-- Exception Request Modal --}}
+    <div class="modal fade" id="exceptionModal" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <form action="{{ route('employee.attendance.request.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header bg-soft-primary text-primary border-0">
+                        <h5 class="modal-title fw-bold" id="exceptionModalTitle"><i class="fe fe-file-text me-2"></i> Submit Request</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <input type="hidden" name="type" id="exceptionType">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Date <span class="text-danger">*</span></label>
+                            <div class="position-relative">
+                                <input type="text" name="request_date" class="form-control datepicker" placeholder="DD-MM-YYYY" required>
+                                <span class="date-icon" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;">
+                                    <i class="fe fe-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Time <span class="text-danger">*</span></label>
+                            <input type="time" name="request_time" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Reason <span class="text-danger">*</span></label>
+                            <textarea name="reason" class="form-control" rows="3" required placeholder="Provide a valid reason..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fe fe-send me-1"></i> Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/js/plugins/bootstrap/js/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.10.0/dist/js/bootstrap-datepicker.min.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var exceptionModal = document.getElementById('exceptionModal');
+            if(exceptionModal) {
+                exceptionModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var type = button.getAttribute('data-type');
+                    
+                    var modalTitle = exceptionModal.querySelector('.modal-title');
+                    var typeInput = exceptionModal.querySelector('#exceptionType');
+                    
+                    var titleMap = {
+                        'early_check_in': 'Early Check-in Request',
+                        'late_check_in': 'Late Check-in Request',
+                        'missed_punch_in': 'Missed Punch In Request',
+                        'missed_punch_out': 'Missed Punch Out Request'
+                    };
+                    
+                    modalTitle.innerHTML = '<i class="fe fe-file-text me-2"></i> ' + titleMap[type];
+                    typeInput.value = type;
+                });
+            }
+        });
+    </script>
+    <script>
         $('.datepicker').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,
+            templates: {
+                leftArrow: '<i class="fe fe-chevron-left"></i>',
+                rightArrow: '<i class="fe fe-chevron-right"></i>'
+            }
         });
     </script>
     <script>

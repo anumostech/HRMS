@@ -14,6 +14,14 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('trade_license_name')->nullable();
+            $table->string('trade_license_number')->nullable();
+            $table->date('trade_license_expiry')->nullable();
+            $table->string('trade_license_attachment')->nullable();
+            $table->string('establishment_card_number')->nullable();
+            $table->date('establishment_card_expiry')->nullable();
+            $table->string('establishment_card_attachment')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

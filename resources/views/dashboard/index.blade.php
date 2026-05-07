@@ -35,7 +35,7 @@
                 <h2 class="fw-bold mb-2">Welcome, {{ Auth::user()->name ?? 'Admin' }}! </h2>
                 <p class="mb-0 opacity-75">Here is what's happening today.</p>
             </div>
-            <div class="hero-stats d-flex gap-4 mt-3 mt-md-0 pt-3 pt-md-0 border-top border-md-top-0 border-light border-opacity-25">
+            <div class="hero-stats d-flex gap-4 mt-3 mt-md-0 pt-3 pt-md-0 border-md-top-0 border-light border-opacity-25">
                 <div class="text-center">
                     <h3 class="fw-bold mb-0" id="hero-total-employees">{{ $todayStats['present'] + $todayStats['absent'] }}</h3>
                     <p class="mb-0 small opacity-75">Total Staff</p>
@@ -57,41 +57,45 @@
 <div class="row mb-4">
     <!-- Total Employees -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card stat-card h-100">
-            <div class="card-body p-4">
-                <div class="stat-icon bg-soft-primary">
-                    <i class="fe fe-users"></i>
-                </div>
-                <h6 class="text-muted mb-2 fw-semibold">Total Employees</h6>
-                <div class="d-flex align-items-end justify-content-between">
-                    <div>
-                        <h2 class="mb-0 fw-bold" id="stat-total-val">{{ $todayStats['present'] + $todayStats['absent'] }}</h2>
-                        <span class="text-success small fw-bold"><i class="fe fe-trending-up me-1"></i>Active Staff</span>
+        <a href="{{ route('employees.index') }}">
+            <div class="card stat-card h-100">
+                <div class="card-body p-4">
+                    <div class="stat-icon bg-soft-primary">
+                        <i class="fe fe-users"></i>
+                    </div>
+                    <h6 class="text-muted mb-2 fw-semibold">Total Employees</h6>
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div>
+                            <h2 class="mb-0 fw-bold" id="stat-total-val">{{ $todayStats['present'] + $todayStats['absent'] }}</h2>
+                            <span class="text-success small fw-bold"><i class="fe fe-trending-up me-1"></i>Active Staff</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Punch-In Status -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card stat-card h-100">
-            <div class="card-body p-4">
-                <div class="stat-icon bg-soft-success">
-                    <i class="fe fe-log-in"></i>
-                </div>
-                <h6 class="text-muted mb-2 fw-semibold">Punched In Today</h6>
-                <div class="d-flex align-items-end justify-content-between">
-                    <div>
-                        <h2 class="mb-0 fw-bold text-success">{{ $todayStats['punched_in'] }}</h2>
-                        <span class="text-muted small">From total staff</span>
+        <a href="{{ route('attendance.punchInToday') }}">
+            <div class="card stat-card h-100">
+                <div class="card-body p-4">
+                    <div class="stat-icon bg-soft-success">
+                        <i class="fe fe-log-in"></i>
                     </div>
-                    <div class="chart-mini">
-                        <canvas id="miniChartIn" width="60" height="30"></canvas>
+                    <h6 class="text-muted mb-2 fw-semibold">Punched In Today</h6>
+                    <div class="d-flex align-items-end justify-content-between">
+                        <div>
+                            <h2 class="mb-0 fw-bold text-success">{{ $todayStats['punched_in'] }}</h2>
+                            <span class="text-muted small">From total staff</span>
+                        </div>
+                        <div class="chart-mini">
+                            <canvas id="miniChartIn" width="60" height="30"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Late Employees -->
@@ -313,6 +317,10 @@
                                                         <i class="fe fe-download"></i>
                                                     </a>
 
+                                                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                        <i class="fe fe-edit"></i>
+                                                    </button>
+
                                                     <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                         <i class="fe fe-trash"></i>
                                                     </button>
@@ -420,6 +428,10 @@
 
                                                         <i class="fe fe-download"></i>
                                                     </a>
+
+                                                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                        <i class="fe fe-edit"></i>
+                                                    </button>
 
                                                     <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                         <i class="fe fe-trash"></i>
@@ -529,6 +541,10 @@
                                                         <i class="fe fe-download"></i>
                                                     </a>
 
+                                                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                        <i class="fe fe-edit"></i>
+                                                    </button>
+
                                                     <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                         <i class="fe fe-trash"></i>
                                                     </button>
@@ -637,6 +653,10 @@
                                                         <i class="fe fe-download"></i>
                                                     </a>
 
+                                                    <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                        <i class="fe fe-edit"></i>
+                                                    </button>
+
                                                     <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                         <i class="fe fe-trash"></i>
                                                     </button>
@@ -719,9 +739,9 @@
                                             @foreach($employees as $key => $employee)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $employee->name }}</td>
-                                                <td>{{ $employee->designation }}</td>
-                                                <td>{{ $employee->department->name ?? '' }}</td>
+                                                <td>{{ $employee->first_name ?? '' }} {{ $employee->last_name ?? '' }}</td>
+                                                <td>{{ $employee->designation?->name ?? '' }}</td>
+                                                <td>{{ $employee->department?->name ?? '' }}</td>
                                                 <td>{{ $employee->company->name ?? '' }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-2">
@@ -785,7 +805,7 @@
         <div class="modal-dialog modal-lg " role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Files</h5>
+                    <h5 class="modal-title" id="modalTitle">Add Files</h5>
                     <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -793,7 +813,7 @@
                 <div class="modal-body">
                     <!-- <form> -->
                     <div class="row">
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-12 mb-3" id="fileUploadContainer">
                             <label class="form-label">Upload file</label>
                             <p>Upload important organization-wide files such as policies or company handbooks.</p>
                             <div class="ff_fileupload_dropzone_wrap">
@@ -850,7 +870,8 @@
                                 </select>
                                 @error('share_with') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-                            <div class="col-md-12 mb-3">
+                        </div>
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Folders <span class="text-danger">*</span></label>
                                 <div class="select-wrapper">
                                     <select class="form-control @error('company_id') is-invalid @enderror" name="folder" id="folderSelect">
@@ -863,10 +884,11 @@
                                     @error('folder') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">File Expiry Date</label>
                                 <input type="text" class="form-control datepicker" name="expiry_date" value="" placeholder="Select date">
                                 <input type="hidden" name="type" id="type">
+                                <input type="hidden" name="document_id" id="document_id">
                             </div>
                         </div>
                         <!-- </form> -->
@@ -1003,45 +1025,94 @@
         });
 
         function submitForm() {
-
-            axios.post('{{ route("documents.store") }}', {
-
+            let docId = document.getElementById('document_id').value;
+            let url = docId ? `/documents/update/${docId}` : '{{ route("documents.store") }}';
+            
+            let data = {
                 name: document.querySelector('[name="name"]').value,
-
-                description: document.querySelector('[name="description"]').value,
-
+                description: document.querySelector('textarea[name="description"]').value,
                 folder: document.querySelector('[name="folder"]').value,
-
                 share_with: document.querySelector('[name="share_with"]').value,
-
                 party_id: document.querySelector('[name="party_id"]').value,
-
                 expiry_date: document.querySelector('[name="expiry_date"]').value,
-
-                file_path: document.getElementById('file_path').value,
-
                 type: document.querySelector('[name="type"]').value,
+            };
 
-            }).then(response => {
+            if (!docId) {
+                data.file_path = document.getElementById('file_path').value;
+            }
 
+            axios.post(url, data).then(response => {
                 let modalElement = document.getElementById('largemodal');
                 let modal = bootstrap.Modal.getInstance(modalElement);
-
                 modal.hide();
 
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: 'Organization added successfully',
+                    text: docId ? 'Document updated successfully' : 'Document added successfully',
                     showConfirmButton: false,
                     timer: 1500
                 });
 
                 location.reload();
-
+            }).catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong!'
+                });
             });
-
         }
+
+        $(document).on('click', '.edit-btn', function() {
+            let id = $(this).data('id');
+            axios.get(`/documents/edit/${id}`).then(response => {
+                let doc = response.data;
+                $('#modalTitle').text('Edit File');
+                $('#document_id').val(doc.id);
+                $('[name="name"]').val(doc.name);
+                $('[name="description"]').val(doc.description);
+                $('[name="folder"]').val(doc.folder);
+                $('[name="share_with"]').val(doc.share_with);
+                $('[name="type"]').val(doc.type);
+                $('[name="party_id"]').val(doc.party_id);
+                
+                if (doc.expiry_date) {
+                    let date = new Date(doc.expiry_date);
+                    let formattedDate = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+                    $('[name="expiry_date"]').val(formattedDate);
+                } else {
+                    $('[name="expiry_date"]').val('');
+                }
+
+                $('#fileUploadContainer').hide();
+
+                if (doc.type === 'agreement') {
+                    $('#agreementDropdown').removeClass('d-none');
+                } else {
+                    $('#agreementDropdown').addClass('d-none');
+                }
+                
+                let modal = new bootstrap.Modal(document.getElementById('largemodal'));
+                modal.show();
+            });
+        });
+
+        // Reset modal when closed
+        $('#largemodal').on('hidden.bs.modal', function () {
+            $('#modalTitle').text('Add Files');
+            $('#document_id').val('');
+            $('[name="name"]').val('');
+            $('[name="description"]').val('');
+            $('[name="folder"]').val('');
+            $('[name="share_with"]').val('');
+            $('[name="expiry_date"]').val('');
+            $('[name="party_id"]').val('');
+            $('#fileUploadContainer').show();
+            $('#agreementDropdown').addClass('d-none');
+            myDropzone.removeAllFiles();
+        });
         $('#folderSelect').on('change', function() {
 
             if ($(this).val() === '__new__') {
@@ -1081,9 +1152,6 @@
             }
 
         });
-
-
-
 
         $('#agreementSelect').on('change', function() {
 
@@ -1279,13 +1347,13 @@
                     datasets: [{
                         label: 'Present Employees',
                         data: weeklyData,
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(111, 247, 172, 0.1)',
                         fill: true,
                         tension: 0.4,
                         borderWidth: 3,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#6366f1',
+                        pointBackgroundColor: '#b2f3c2',
+                        pointBorderColor: '#1a9e52',
                         pointBorderWidth: 2,
                         pointRadius: 4,
                         pointHoverRadius: 6

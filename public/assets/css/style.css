@@ -86,7 +86,7 @@ License        :   Licensed under ThemeForest License
 --- width
 */
 /* ######## THEME FONT ######## */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
 /* ######## BOOTSTRAP ######## */
 :root {
@@ -118,7 +118,7 @@ License        :   Licensed under ThemeForest License
   --transparentprimary-transparentcolor: rgba(255, 255, 255, 0.05);
   --float-right: right;
   --float-left: left;
-  --theme-font-family: "Plus Jakarta Sans", sans-serif;
+  --theme-font-family: "DM Sans", sans-serif;
   --indigo: #4b0082;
   --purple: #6f42c1;
   --pink: #fc5296;
@@ -1872,6 +1872,7 @@ button.btn-close:focus {
 
 .btn:not(:disabled):not(.disabled) {
   cursor: pointer;
+  border-radius:40px;
 }
 
 .btn:not(:disabled):not(.disabled):active,

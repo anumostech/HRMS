@@ -25,8 +25,20 @@ class Document extends Model
     public function setExpiryDateAttribute($value)
     {
         if ($value) {
-            $this->attributes['expiry_date'] = Carbon::createFromFormat('d-m-Y', $value)
-                ->format('Y-m-d');
+            try {
+                // If it's already in Y-m-d, just store it
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                    $this->attributes['expiry_date'] = $value;
+                } else {
+                    $this->attributes['expiry_date'] = Carbon::createFromFormat('d-m-Y', $value)
+                        ->format('Y-m-d');
+                }
+            } catch (\Exception $e) {
+                // Fallback attempt or just store as is if it's already a valid date string
+                $this->attributes['expiry_date'] = Carbon::parse($value)->format('Y-m-d');
+            }
+        } else {
+            $this->attributes['expiry_date'] = null;
         }
     }
 

@@ -125,6 +125,10 @@
                                                     <i class="fe fe-download"></i>
                                                 </a>
 
+                                                <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                    <i class="fe fe-edit"></i>
+                                                </button>
+
                                                 <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                     <i class="fe fe-trash"></i>
                                                 </button>
@@ -233,7 +237,11 @@
                                                     <i class="fe fe-download"></i>
                                                 </a>
 
-                                                 <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
+                                                 <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                    <i class="fe fe-edit"></i>
+                                                </button>
+
+                                                <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                     <i class="fe fe-trash"></i>
                                                 </button>
 
@@ -341,7 +349,11 @@
                                                     <i class="fe fe-download"></i>
                                                 </a>
 
-                                                 <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
+                                                 <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                    <i class="fe fe-edit"></i>
+                                                </button>
+
+                                                <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                     <i class="fe fe-trash"></i>
                                                 </button>
 
@@ -449,7 +461,11 @@
                                                     <i class="fe fe-download"></i>
                                                 </a>
 
-                                                 <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
+                                                 <button class="btn btn-sm btn-primary edit-btn" data-id="{{ $record->id }}">
+                                                    <i class="fe fe-edit"></i>
+                                                </button>
+
+                                                <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $record->id }}">
                                                     <i class="fe fe-trash"></i>
                                                 </button>
 
@@ -590,7 +606,7 @@
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Files</h5>
+                <h5 class="modal-title" id="modalTitle">Add Files</h5>
                 <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -598,7 +614,7 @@
             <div class="modal-body">
                 <!-- <form> -->
                 <div class="row">
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-12 mb-3" id="fileUploadContainer">
                         <label class="form-label">Upload file</label>
                         <p>Upload important organization-wide files such as policies or company handbooks.</p>
                         <div class="ff_fileupload_dropzone_wrap">
@@ -656,6 +672,7 @@
                         <label class="form-label">File Expiry Date</label>
                         <input type="text" class="form-control datepicker" name="expiry_date" value="" placeholder="Select date">
                         <input type="hidden" name="type" id="type">
+                        <input type="hidden" name="document_id" id="document_id">
                     </div>
                 </div>
                 <!-- </form> -->
@@ -723,44 +740,86 @@
 
     });
 
+
     function submitForm() {
-
-        axios.post('{{ route("documents.store") }}', {
-
+        let docId = document.getElementById('document_id').value;
+        let url = docId ? `/documents/update/${docId}` : '{{ route("documents.store") }}';
+        
+        let data = {
             name: document.querySelector('[name="name"]').value,
-
-            description: document.querySelector('[name="description"]').value,
-
+            description: document.querySelector('textarea[name="description"]').value,
             folder: document.querySelector('[name="folder"]').value,
-
             share_with: document.querySelector('[name="share_with"]').value,
-
             expiry_date: document.querySelector('[name="expiry_date"]').value,
-
-            file_path: document.getElementById('file_path').value,
-
             type: document.querySelector('[name="type"]').value,
+        };
 
-        }).then(response => {
+        if (!docId) {
+            data.file_path = document.getElementById('file_path').value;
+        }
 
+        axios.post(url, data).then(response => {
             let modalElement = document.getElementById('largemodal');
             let modal = bootstrap.Modal.getInstance(modalElement);
-
             modal.hide();
 
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'Organization added successfully',
+                text: docId ? 'Document updated successfully' : 'Document added successfully',
                 showConfirmButton: false,
                 timer: 1500
             });
 
             location.reload();
-
+        }).catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong!'
+            });
         });
-
     }
+
+    $(document).on('click', '.edit-btn', function() {
+        let id = $(this).data('id');
+        axios.get(`/documents/edit/${id}`).then(response => {
+            let doc = response.data;
+            $('#modalTitle').text('Edit File');
+            $('#document_id').val(doc.id);
+            $('[name="name"]').val(doc.name);
+            $('[name="description"]').val(doc.description);
+            $('[name="folder"]').val(doc.folder);
+            $('[name="share_with"]').val(doc.share_with);
+            $('[name="type"]').val(doc.type);
+            
+            if (doc.expiry_date) {
+                let date = new Date(doc.expiry_date);
+                let formattedDate = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+                $('[name="expiry_date"]').val(formattedDate);
+            } else {
+                $('[name="expiry_date"]').val('');
+            }
+
+            $('#fileUploadContainer').hide();
+            
+            let modal = new bootstrap.Modal(document.getElementById('largemodal'));
+            modal.show();
+        });
+    });
+
+    // Reset modal when closed
+    $('#largemodal').on('hidden.bs.modal', function () {
+        $('#modalTitle').text('Add Files');
+        $('#document_id').val('');
+        $('[name="name"]').val('');
+        $('[name="description"]').val('');
+        $('[name="folder"]').val('');
+        $('[name="share_with"]').val('');
+        $('[name="expiry_date"]').val('');
+        $('#fileUploadContainer').show();
+        myDropzone.removeAllFiles();
+    });
     $('#folderSelect').on('change', function() {
 
         if ($(this).val() === '__new__') {

@@ -11,17 +11,24 @@ class Company extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'organisation_id',
+        'organization_id',
         'company_name',
         'phone',
         'email',
         'logo',
-        'address'
+        'address',
+        'trade_license_name',
+        'trade_license_number',
+        'trade_license_expiry',
+        'trade_license_attachment',
+        'establishment_card_number',
+        'establishment_card_expiry',
+        'establishment_card_attachment',
     ];
 
-    public function organisation()
+    public function organization()
     {
-        return $this->belongsTo(Organisation::class, 'organisation_id');
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 
     public function attendanceLogs()

@@ -4,12 +4,12 @@
 
 @section('content')
 <!-- PAGE-HEADER -->
-<div class="page-header">
-    <h1 class="page-title">Attendance</h1>
+<div class="page-header" style="display: inline;">
+    <h1 class="page-title mb-2">Absent Today</h1>
     <div>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Attendance</li>
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Attendance</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Absent Today</li>
         </ol>
     </div>
 </div>
@@ -80,7 +80,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($attendance as $key => $record)
+                            @foreach($attendance as $key => $record)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $record->company->name }}</td>
@@ -106,11 +106,7 @@
                                     @endif
                                 </td>
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">No attendance records found with these filters.</td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

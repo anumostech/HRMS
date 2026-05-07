@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Organisation;
+use App\Models\Organization;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,13 +11,13 @@ class OrganizationController extends Controller
 {
     public function index()
     {
-        $organisations = Organisation::latest()->get();
-        return view('admin.organisations.index', compact('organisations'));
+        $organizations = Organization::latest()->get();
+        return view('admin.organizations.index', compact('organizations'));
     }
 
     public function create()
     {
-        return view('admin.organisations.create');
+        return view('admin.organizations.create');
     }
 
     public function store(Request $request)
@@ -33,21 +34,32 @@ class OrganizationController extends Controller
         $data = $request->except('logo');
         
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('logos/organisations', 'public');
+            $path = $request->file('logo')->store('logos/organizations', 'public');
             $data['logo'] = $path;
         }
 
-        Organisation::create($data);
+        $organization = Organization::create($data);
 
-        return redirect()->route('organizations.index')->with('success', 'Organisation created successfully.');
+        if (!$organization->has_multiple_companies) {
+            Company::create([
+                'organization_id' => $organization->id,
+                'company_name' => $organization->org_name,
+                'phone' => $organization->phone,
+                'email' => $organization->email,
+                'logo' => $organization->logo,
+                'address' => $organization->address,
+            ]);
+        }
+
+        return redirect()->route('organizations.index')->with('success', 'Organization created successfully.');
     }
 
-    public function edit(Organisation $organization)
+    public function edit(Organization $organization)
     {
-        return view('admin.organisations.edit', compact('organization'));
+        return view('admin.organizations.edit', compact('organization'));
     }
 
-    public function update(Request $request, Organisation $organization)
+    public function update(Request $request, Organization $organization)
     {
         $request->validate([
             'org_name' => 'required|string|max:255',
@@ -65,18 +77,36 @@ class OrganizationController extends Controller
             if ($organization->logo) {
                 Storage::disk('public')->delete($organization->logo);
             }
-            $path = $request->file('logo')->store('logos/organisations', 'public');
+            $path = $request->file('logo')->store('logos/organizations', 'public');
             $data['logo'] = $path;
         }
 
         $organization->update($data);
 
-        return redirect()->route('organizations.index')->with('success', 'Organisation updated successfully.');
+        if (!$organization->has_multiple_companies) {
+            $company = Company::where('organization_id', $organization->id)->first();
+            
+            $companyData = [
+                'company_name' => $organization->org_name,
+                'phone' => $organization->phone,
+                'email' => $organization->email,
+                'logo' => $organization->logo,
+                'address' => $organization->address,
+            ];
+
+            if ($company) {
+                $company->update($companyData);
+            } else {
+                Company::create(array_merge(['organization_id' => $organization->id], $companyData));
+            }
+        }
+
+        return redirect()->route('organizations.index')->with('success', 'Organization updated successfully.');
     }
 
-    public function destroy(Organisation $organization)
+    public function destroy(Organization $organization)
     {
         $organization->delete();
-        return redirect()->route('organizations.index')->with('success', 'Organisation deleted successfully.');
+        return redirect()->route('organizations.index')->with('success', 'Organization deleted successfully.');
     }
 }

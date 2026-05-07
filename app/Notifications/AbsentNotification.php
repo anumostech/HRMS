@@ -28,19 +28,7 @@ class AbsentNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-                    ->subject('Absent Notification - ' . $this->employee->name)
-                    ->line('The employee ' . $this->employee->name . ' has not punched in today.')
-                    ->action('View Employee', route('employees.show', $this->employee->id))
-                    ->line('Please follow up with the employee.');
+        return ['database'];
     }
 
     /**
@@ -52,8 +40,8 @@ class AbsentNotification extends Notification
     {
         return [
             'employee_id' => $this->employee->id,
-            'employee_name' => $this->employee->name,
-            'message' => $this->employee->name . ' is absent today.'
+            'employee_name' => $this->employee->first_name,
+            'message' => $this->employee->first_name . ' is absent today.'
         ];
     }
 }

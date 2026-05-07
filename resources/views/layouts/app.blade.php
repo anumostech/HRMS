@@ -96,6 +96,104 @@
         .password-toggle-icon:hover {
             color: #6366f1;
         }
+
+        /* ── Modern Datepicker ── */
+        .datepicker-dropdown {
+            padding: 15px !important;
+            border: 0 !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+            border-radius: 16px !important;
+            background: #fff !important;
+            margin-top: 5px !important;
+            z-index: 9999 !important;
+        }
+
+        .datepicker table {
+            width: 100%;
+        }
+
+        .datepicker table tr td,
+        .datepicker table tr th {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px !important;
+            border: none;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .datepicker table tr th {
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .datepicker table tr th.prev,
+        .datepicker table tr th.next,
+        .datepicker table tr th.datepicker-switch {
+            background: transparent !important;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .datepicker table tr th.prev:hover,
+        .datepicker table tr th.next:hover {
+            background: #f3f4f6 !important;
+        }
+
+        .datepicker table tr th.dow {
+            color: #059669 !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            padding-bottom: 12px;
+        }
+
+        .datepicker table tr td.day {
+            color: #4b5563;
+        }
+
+        .datepicker table tr td.day:hover {
+            background: #ecfdf5 !important;
+            color: #059669 !important;
+            cursor: pointer;
+        }
+
+        .datepicker table tr td.old,
+        .datepicker table tr td.new {
+            color: #d1d5db !important;
+        }
+
+        .datepicker table tr td.active,
+        .datepicker table tr td.active:hover {
+            background: #059669 !important;
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
+        }
+
+        .datepicker table tr td.today {
+            background: #fef3c7 !important;
+            color: #d97706 !important;
+            position: relative;
+        }
+
+        .datepicker table tr td.today:after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #d97706;
+            border-radius: 50%;
+        }
+
+        .datepicker .datepicker-switch:hover {
+            background: #f3f4f6 !important;
+        }
     </style>
 
 
@@ -202,7 +300,7 @@
                                         class="nav-link user-dropdown gap-2 d-flex align-items-center">
                                         <div class="avatar-container">
                                             <img src="{{ Auth::user()->avatar_url }}"
-                                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=0D9C1E&background=e7f5e9'"
+                                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=ffff&background=2ecc71'"
                                                 alt="profile-user" class="profile-user avatar cover-image">
                                         </div>
                                         <div class="media-body d-lg-block d-none ps-1">
@@ -216,7 +314,7 @@
                                         <div class="drop-heading p-3 border-bottom bg-light rounded-top">
                                             <div class="d-flex align-items-center gap-3">
                                                 <img src="{{ Auth::user()->avatar_url }}"
-                                                    onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=0D9C1E&background=e7f5e9'"
+                                                    onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=ffff&background=2ecc71'"
                                                     alt="profile-user" class="avatar avatar-md rounded-3">
                                                 <div class="overflow-hidden">
                                                     <h6 class="text-dark fw-bold mb-0 text-truncate">
@@ -320,8 +418,50 @@
                                     </a>
                                 </li>
                                 <li class="slide">
-                                    <a class="sidenav-menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}"
+                                    <a class="sidenav-menu-item {{ request()->routeIs('departments.*') ? 'active' : '' }}"
+                                        href="{{ route('departments.index') }}">
+                                        <i class="side-menu__icon fe fe-layers"></i>
+                                        <span class="side-menu__label">Departments</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('designations.*') ? 'active' : '' }}"
+                                        href="{{ route('designations.index') }}">
+                                        <i class="side-menu__icon fe fe-tag"></i>
+                                        <span class="side-menu__label">Designations</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('wfh_requests.*') ? 'active' : '' }}"
+                                        href="{{ route('wfh_requests.index') }}">
+                                        <i class="side-menu__icon fe fe-home"></i>
+                                        <span class="side-menu__label">WFH Requests</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('task_reports.*') ? 'active' : '' }}"
+                                        href="{{ route('task_reports.index') }}">
+                                        <i class="side-menu__icon fe fe-clipboard"></i>
+                                        <span class="side-menu__label">Task Reports</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('attendance_requests.*') ? 'active' : '' }}"
+                                        href="{{ route('attendance_requests.index') }}">
+                                        <i class="side-menu__icon fe fe-file-text"></i>
+                                        <span class="side-menu__label">Attendance Requests</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('meetings.*') ? 'active' : '' }}"
                                         href="#">
+                                        <i class="side-menu__icon fe fe-calendar"></i>
+                                        <span class="side-menu__label">Meetings</span>
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('reports.*') ? 'active' : '' }}"
+                                        href="{{ route('reports.index') }}">
                                         <i class="side-menu__icon fe fe-trending-up"></i>
                                         <span class="side-menu__label">Reports</span>
                                     </a>
@@ -434,10 +574,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // fetchStats();
-            checkNotifications();
+            // checkNotifications();
 
             // Poll for notifications every 30 seconds
-            setInterval(checkNotifications, 30000);
+            // setInterval(checkNotifications, 30000);
 
             // Password Eye Toggle
             $('input[type="password"]').each(function () {
@@ -460,32 +600,32 @@
             });
         });
 
-        function checkNotifications() {
-            axios.get('{{ route("dashboard.notifications") }}')
-                .then(response => {
-                    const notifications = response.data;
+        // function checkNotifications() {
+        //     axios.get('{{ route("dashboard.notifications") }}')
+        //         .then(response => {
+        //             const notifications = response.data;
 
-                    if (notifications.length > 0) {
+        //             if (notifications.length > 0) {
 
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true,
-                        });
+        //                 const Toast = Swal.mixin({
+        //                     toast: true,
+        //                     position: 'top-end',
+        //                     showConfirmButton: false,
+        //                     timer: 3000,
+        //                     timerProgressBar: true,
+        //                 });
 
-                        Toast.fire({
-                            iconHtml: '<i class="fa fa-bell" style="color:#f59e0b;font-size:18px;"></i>',
-                            title: `You have ${notifications.length} new notifications`,
-                            customClass: {
-                                icon: 'no-border'
-                            }
-                        });
-                    }
-                })
-                .catch(error => console.error('Error fetching notifications:', error));
-        }
+        //                 Toast.fire({
+        //                     iconHtml: '<i class="fa fa-bell" style="color:#f59e0b;font-size:18px;"></i>',
+        //                     title: `You have ${notifications.length} new notifications`,
+        //                     customClass: {
+        //                         icon: 'no-border'
+        //                     }
+        //                 });
+        //             }
+        //         })
+        //         .catch(error => console.error('Error fetching notifications:', error));
+        // }
 
         function markSingleAsRead(id) {
             let url = "{{ route('dashboard.notifications.read', ':id') }}";
@@ -519,7 +659,7 @@
             $('.datatable-basic').each(function () {
                 if (!$.fn.DataTable.isDataTable(this)) {
                     $(this).DataTable({
-                        pageLength: 10,
+                        pageLength: 50,
                         language: {
                             search: "",
                             searchPlaceholder: "Search records...",
@@ -538,7 +678,7 @@
             // Initialize by ID (for single table pages using legacy ID)
             if ($('#basic-datatable').length && !$.fn.DataTable.isDataTable('#basic-datatable')) {
                 $('#basic-datatable').DataTable({
-                    pageLength: 10,
+                    pageLength: 50,
                     language: {
                         search: "",
                         searchPlaceholder: "Search records...",
@@ -559,6 +699,10 @@
         $('.datepicker').datepicker({
             format: "dd-mm-yyyy",
             autoclose: true,
+            templates: {
+                leftArrow: '<i class="fe fe-chevron-left"></i>',
+                rightArrow: '<i class="fe fe-chevron-right"></i>'
+            }
         });
     </script>
 </body>
