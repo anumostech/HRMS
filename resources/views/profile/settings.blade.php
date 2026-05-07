@@ -24,7 +24,7 @@
                         <div class="row mb-4 align-items-center">
                             <div class="col-md-3 text-center mb-3 mb-md-0">
                                 <img src="{{ $user->avatar_url }}" 
-                                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&color=6366f1&background=eef2ff'"
+                                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&color=fff&background=2ecc71'"
                                      alt="Profile Image" 
                                      class="rounded-circle shadow-sm" 
                                      style="width: 100px; height: 100px; object-fit: cover;">

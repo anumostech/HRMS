@@ -25,11 +25,11 @@
             <div class="card-body">
                 <div class="text-center mb-4">
                     <h4 class="mb-0 fw-bold">{{ $employee->first_name }} {{ $employee->last_name }}</h4>
-                    <p class="text-muted">{{ $employee->designation->name }} | {{ $employee->department->name }}</p>
+                    <p class="text-muted">{{ $employee->designation?->name }} | {{ $employee->department?->name }}</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Company <span class="fw-semibold">{{ $employee->company->company_name ?? 'N/A' }}</span>
+                        Company <span class="fw-semibold">{{ $employee->company->company_name ?? ($employee->organization->org_name ?? 'N/A') }}</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Joining Date <span class="fw-semibold">{{ $employee->joining_date ?? 'N/A' }}</span>

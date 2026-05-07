@@ -16,7 +16,24 @@
         @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
+    <!-- Organization -->
+    <div class="col-md-3 mb-3">
+        <label class="form-label">Organization <span class="text-danger">*</span></label>
+        <div class="select-wrapper">
+            <select class="form-control @error('organization_id') is-invalid @enderror" name="organization_id" id="organizationSelect" required>
+                <option value="">Select Organization</option>
+                @foreach($organizations as $org)
+                    <option value="{{ $org->id }}" {{ old('organization_id', $employee->organization_id ?? ($organization->id ?? '')) == $org->id ? 'selected' : '' }}>
+                        {{ $org->org_name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('organization_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        </div>
+    </div>
+
     <!-- Company -->
+    @if($organization->has_multiple_companies)
     <div class="col-md-3 mb-3">
         <label class="form-label">Company <span class="text-danger">*</span></label>
         <div class="select-wrapper">
@@ -32,6 +49,9 @@
             @error('company_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
     </div>
+    @else
+        <input type="hidden" name="company_id" value="{{ $organization->id }}">
+    @endif
 
     <!-- Department -->
     <div class="col-md-3 mb-3">
@@ -146,7 +166,7 @@
             </select>
         </div>
     </div>
-    
+
 
 
 

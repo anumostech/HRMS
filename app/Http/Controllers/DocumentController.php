@@ -106,6 +106,36 @@ class DocumentController extends Controller
         ], 200);
     }
 
+    public function editDocument($id)
+    {
+        $document = Document::findOrFail($id);
+        return response()->json($document);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $document = Document::findOrFail($id);
+        
+        $data = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'share_with' => $request->share_with,
+            'expiry_date' => $request->expiry_date
+        ];
+
+        // Only update folder and move file if folder changed and no new file uploaded
+        // Actually, for now, let's just update the metadata
+        if ($request->folder && $request->folder != $document->folder) {
+             // Move file to new folder logic could go here if needed
+             // But for simplicity, let's just update metadata for now
+             $document->folder = $request->folder;
+        }
+
+        $document->update($data);
+
+        return response()->json(['success' => true]);
+    }
+
     public function deleteDocument($id)
     {
         Document::findOrFail($id)->delete();

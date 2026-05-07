@@ -52,6 +52,6 @@ class User extends Authenticatable
         if ($this->avatar && file_exists(storage_path('app/public/' . $this->avatar))) {
             return asset('storage/' . $this->avatar);
         }
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=6366f1&background=eef2ff';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=fff&background=2ecc71';
     }
 }
