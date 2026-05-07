@@ -349,7 +349,7 @@
                 type: "POST",
                 data: {
                     company_name: companyName,
-                    organization_id: 1,
+                    organization_id: $('#organizationSelect').val(),
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (response) {

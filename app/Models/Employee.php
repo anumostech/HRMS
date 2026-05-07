@@ -126,12 +126,17 @@ class Employee extends Authenticatable
         if ($this->avatar && file_exists(storage_path('app/public/' . $this->avatar))) {
             return asset('storage/' . $this->avatar);
         }
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=6366f1&background=eef2ff';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->first_name) . '&color=fff&background=2ecc71';
     }
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
     }
 
     public function department()

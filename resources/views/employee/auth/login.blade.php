@@ -10,7 +10,7 @@
         :root { --primary: #54ee76; --primary-dark: #2ecc71; }
 
         body {
-            font-family:'Plus Jakarta Sans', sans-serif;
+            font-family:'DM Sans', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;

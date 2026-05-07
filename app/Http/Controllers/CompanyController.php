@@ -39,7 +39,7 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'organization_id' => 'required|exists:organizations,id',
+            'organization_id' => 'required|exists:organizations,id',
             'company_name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
@@ -86,7 +86,7 @@ class CompanyController extends Controller
             $data['establishment_card_expiry'] = Carbon::createFromFormat('d-m-Y', $request->establishment_card_expiry)->format('Y-m-d');
         }
 
-        $data['organization_id'] = 1;
+        $data['organization_id'] = $request->organization_id;
 
         $company = Company::create($data);
 
@@ -107,7 +107,7 @@ class CompanyController extends Controller
     public function update(Request $request, Company $company)
     {
         $request->validate([
-            // 'organization_id' => 'required|exists:organizations,id',
+            'organization_id' => 'required|exists:organizations,id',
             'company_name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
@@ -153,7 +153,7 @@ class CompanyController extends Controller
             $data['establishment_card_expiry'] = Carbon::createFromFormat('d-m-Y', $request->establishment_card_expiry)->format('Y-m-d');
         }
 
-        $data['organization_id'] = 1;
+        $data['organization_id'] = $request->organization_id;
 
         $company->update($data);
 

@@ -390,8 +390,8 @@
                                     </a>
                                 </li>
                                 <li class="slide">
-                                    <a class="sidenav-menu-item {{ request()->routeIs('companies.index') ? 'active' : '' }}"
-                                        href="{{ route('companies.index') }}">
+                                    <a class="sidenav-menu-item {{ request()->routeIs('organizations.index') ? 'active' : '' }}"
+                                        href="{{ route('organizations.index') }}">
                                         <i class="side-menu__icon fe fe-briefcase"></i>
                                         <span class="side-menu__label">Organizations</span>
                                     </a>

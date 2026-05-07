@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,7 +38,18 @@ class OrganizationController extends Controller
             $data['logo'] = $path;
         }
 
-        Organization::create($data);
+        $organization = Organization::create($data);
+
+        if (!$organization->has_multiple_companies) {
+            Company::create([
+                'organization_id' => $organization->id,
+                'company_name' => $organization->org_name,
+                'phone' => $organization->phone,
+                'email' => $organization->email,
+                'logo' => $organization->logo,
+                'address' => $organization->address,
+            ]);
+        }
 
         return redirect()->route('organizations.index')->with('success', 'Organization created successfully.');
     }
@@ -70,6 +82,24 @@ class OrganizationController extends Controller
         }
 
         $organization->update($data);
+
+        if (!$organization->has_multiple_companies) {
+            $company = Company::where('organization_id', $organization->id)->first();
+            
+            $companyData = [
+                'company_name' => $organization->org_name,
+                'phone' => $organization->phone,
+                'email' => $organization->email,
+                'logo' => $organization->logo,
+                'address' => $organization->address,
+            ];
+
+            if ($company) {
+                $company->update($companyData);
+            } else {
+                Company::create(array_merge(['organization_id' => $organization->id], $companyData));
+            }
+        }
 
         return redirect()->route('organizations.index')->with('success', 'Organization updated successfully.');
     }

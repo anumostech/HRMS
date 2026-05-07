@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\EmployeeCreatedMail;
 
 class EmployeeController extends Controller
 {
@@ -34,12 +37,13 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        $companies = Company::where('organization_id', '1')->get();
+        $organization = Organization::first(); 
+        $companies = $organization ? Company::where('organization_id', $organization->id)->get() : collect();
         $departments = Department::all();
         $designations = Designation::orderBy('id', 'desc')->get();
         $organizations = Organization::all();
         $employee = new Employee();
-        return view('employees.create', compact('companies', 'departments', 'organizations', 'employee', 'designations'));
+        return view('employees.create', compact('companies', 'departments', 'organizations', 'employee', 'designations', 'organization'));
     }
 
     public function store(StoreEmployeeRequest $request)
@@ -96,10 +100,29 @@ class EmployeeController extends Controller
 
         $data['special_days'] = !empty($specialDays) ? $specialDays : null;
 
-        $data['organization_id'] = 1;
-        $data['password'] = Hash::make('Thesay@ae');
+        $organizationId = $data['organization_id'] ?? 1; // Default to 1 if missing for now
+        $organization = Organization::find($organizationId);
+        if ($organization && !$organization->has_multiple_companies) {
+            $company = Company::where('organization_id', $organization->id)->first();
+            if ($company) {
+                $data['company_id'] = $company->id;
+            }
+        }
 
-        Employee::create($data);
+        $temporaryPassword = Str::random(10);
+        $data['password'] = Hash::make($temporaryPassword);
+
+        $employee = Employee::create($data);
+
+        // Send Welcome Mail
+        if ($employee->company_email) {
+            try {
+                Mail::to($employee->company_email)->send(new EmployeeCreatedMail($employee, $temporaryPassword));
+            } catch (\Exception $e) {
+                // Log error or handle as needed
+                \Illuminate\Support\Facades\Log::error('Failed to send welcome email to employee: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
@@ -111,11 +134,12 @@ class EmployeeController extends Controller
 
     public function edit(Employee $employee)
     {
-        $companies = Company::all();
+        $organization = Organization::find($employee->organization_id) ?: Organization::first();
+        $companies = $organization ? Company::where('organization_id', $organization->id)->get() : collect();
         $departments = Department::all();
         $designations = Designation::orderBy('id', 'desc')->get();
         $organizations = Organization::all();
-        return view('employees.edit', compact('employee', 'companies', 'departments', 'organizations', 'designations'));
+        return view('employees.edit', compact('employee', 'companies', 'departments', 'organizations', 'designations', 'organization'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
@@ -180,7 +204,14 @@ class EmployeeController extends Controller
 
         $data['special_days'] = !empty($specialDays) ? $specialDays : null;
 
-        $data['organization_id'] = 1;
+        $organizationId = $data['organization_id'] ?? $employee->organization_id ?? 1;
+        $organization = Organization::find($organizationId);
+        if ($organization && !$organization->has_multiple_companies) {
+            $company = Company::where('organization_id', $organization->id)->first();
+            if ($company) {
+                $data['company_id'] = $company->id;
+            }
+        }
 
         $employee->update($data);
 

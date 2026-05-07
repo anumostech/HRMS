@@ -7,15 +7,17 @@
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="page-title">Organization Management</h1>
+                <h1 class="page-title mb-2">Organizations</h1>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Organizations</li>
                 </ol>
             </div>
+            @if(empty($organizations) || count($organizations) == 0)
             <a href="{{ route('organizations.create') }}" class="btn btn-primary">
                 <i class="fe fe-plus"></i> Add Organization
             </a>
+            @endif
         </div>
     </div>
     <div class="col-12">
@@ -26,7 +28,7 @@
                         <thead>
                             <tr>
                                 <th>Logo</th>
-                                <th>Org Name</th>
+                                <th>Organization Name</th>
                                 <th>Phone</th>
                                 <th>Email</th>
                                 <th>Multi-Company</th>
@@ -54,7 +56,7 @@
                                 <td>
                                     @if($org->has_multiple_companies)
                                     <span class="badge bg-success-transparent text-success">Yes</span>
-                                    <a href="{{ route('companies.index', ['organization_id' => $org->id]) }}" class="ms-2 small text-primary">Manage Companies</a>
+                                    <a href="{{ route('companies.index', ['organization_id' => $org->id]) }}" class="ms-2 small text-primary"><b>Manage Companies</b></a>
                                     @else
                                     <span class="badge bg-light text-muted">No</span>
                                     @endif

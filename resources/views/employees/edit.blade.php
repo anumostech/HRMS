@@ -351,13 +351,14 @@
                 url: "{{ route('companies.store') }}",
                 type: "POST",
                 data: {
-                    name: companyName,
+                    company_name: companyName,
+                    organization_id: $('#organizationSelect').val(),
                     _token: "{{ csrf_token() }}"
                 },
                 success: function (response) {
 
                     let newOption = `<option value="${response.company.id}">
-                                    ${response.company.name}
+                                    ${response.company.company_name}
                                  </option>`;
 
                     $('#addCompanyOption').before(newOption);

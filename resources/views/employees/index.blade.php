@@ -67,7 +67,7 @@
                                 </td>
                                 <td>{{ $employee->designation?->name }}</td>
                                 <td>{{ $employee->department->name ?? '' }}</td>
-                                <td>{{ $employee->company->company_name ?? '' }}</td>
+                                <td>{{ $employee->company->company_name ?? ($employee->organization->org_name ?? '') }}</td>
                                 <td>
                                     <a href="{{ route('leave-allocations.edit', $employee->id) }}" class="badge bg-info-light text-info rounded-pill px-3 py-2" title="View/Manage Balance">
                                         <i class="fe fe-calendar me-1"></i>View Balance

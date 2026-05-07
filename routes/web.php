@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents');
     Route::post('/documents/upload', [DocumentController::class, 'upload'])->name('documents.upload');
     Route::post('/documents/store', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/edit/{id}', [DocumentController::class, 'editDocument'])->name('documents.edit');
+    Route::post('/documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
     Route::post('/documents/delete/{id}', [DocumentController::class, 'deleteDocument'])->name('documents.delete');
 
     Route::post('/employees/{employee}/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
